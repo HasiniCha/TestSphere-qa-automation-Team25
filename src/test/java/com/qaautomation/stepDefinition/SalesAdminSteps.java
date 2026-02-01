@@ -1,4 +1,4 @@
-package com.qaautomation.stepDefinition;
+package com.qaautomation.stepdefinition;
 
 import io.cucumber.java.en.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
