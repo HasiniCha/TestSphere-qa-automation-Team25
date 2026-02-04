@@ -1,3 +1,4 @@
+@UI @API
 Feature: Sales Admin UI
 
   Background:

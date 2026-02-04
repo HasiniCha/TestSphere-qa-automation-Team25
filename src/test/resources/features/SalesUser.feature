@@ -1,3 +1,4 @@
+@UI @User
 Feature: Sales User UI
 
   Background: 

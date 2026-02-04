@@ -1,3 +1,4 @@
+@UI @User @Login
 Feature: Login Functionality
 
   Background:
