@@ -23,6 +23,7 @@ public class SalesAdminSteps {
   SellPlantPage sellPlantPage = new SellPlantPage(Hooks.driver);
   SidebarNavigation sidenavBar = new SidebarNavigation(Hooks.driver);
   PlantsPage plantsPage = new PlantsPage(Hooks.driver);
+  private String deletedSaleName;
 
   // Background step
   @Given("User is logged in and on Dashboard")
@@ -149,10 +150,14 @@ public class SalesAdminSteps {
     Assert.assertTrue("Should be on Plants page", plantsPage.isOnPlantsPage());
 
     String actualStock = plantsPage.getPlantStock(plantName);
+    
+    // Extract numeric value only (remove " Low", " Medium", etc.)
+    String numericStock = actualStock.split(" ")[0].trim();
+    
     Assert.assertEquals(
       "Stock for plant '" + plantName + "' should be reduced correctly",
       expectedStock,
-      actualStock
+      numericStock
     );
   }
 
@@ -172,9 +177,12 @@ public class SalesAdminSteps {
 @When("Admin clicks Delete icon on action column")
 public void admin_clicks_delete_icon_on_action_column() {
     WebElement latestRow = salesPage.getLatestSaleRow();
-    String saleName = latestRow.findElement(By.xpath("./td[1]")).getText(); 
+    // Capture the name BEFORE deleting
+    deletedSaleName = latestRow.findElement(By.xpath("./td[1]")).getText(); 
     salesPage.deleteSale();
 }
+
+
 
 @Then("success message is displayed")
   public void success_message_is_displayed() {
@@ -186,9 +194,11 @@ public void admin_clicks_delete_icon_on_action_column() {
 
 @And("record is deleted from the list")
 public void record_is_deleted_from_the_list() {
-    WebElement latestRow = salesPage.getLatestSaleRow();
-    String saleName = latestRow != null ? latestRow.findElement(By.xpath("./td[1]")).getText() : "";
-    Assert.assertTrue("Sale should be deleted", salesPage.isSaleDeleted(saleName));
+    // Use the captured name from before deletion
+    Assert.assertTrue(
+        "Sale '" + deletedSaleName + "' should be deleted", 
+        salesPage.isSaleDeleted(deletedSaleName)
+    );
 }
 
     // TC-005: Sorting test

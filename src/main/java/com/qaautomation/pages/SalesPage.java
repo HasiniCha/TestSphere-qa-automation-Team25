@@ -71,7 +71,8 @@ public class SalesPage extends BasePage {
 
     public boolean isSaleDeleted(String saleName) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(salesTable));
             
             List<WebElement> rows = driver.findElements(By.xpath(
                 "//table/tbody/tr[td[contains(text(),'" + saleName + "')]]"
@@ -162,33 +163,88 @@ public class SalesPage extends BasePage {
         }
     }
 
-    public boolean isSortedAscending(List<String> values) {
-        if (values.size() <= 1) {
-            return true;
-        }
-        
-        List<String> sorted = new ArrayList<>(values);
-        sorted.sort(String::compareToIgnoreCase);
-        
-        System.out.println("Original: " + values);
-        System.out.println("Expected (ASC): " + sorted);
-        
-        return values.equals(sorted);
-    }
+   // In SalesPage.java
 
-    public boolean isSortedDescending(List<String> values) {
-        if (values.size() <= 1) {
-            return true;
-        }
-        
-        List<String> sorted = new ArrayList<>(values);
-        sorted.sort((a, b) -> b.compareToIgnoreCase(a));
-        
-        System.out.println("Original: " + values);
-        System.out.println("Expected (DESC): " + sorted);
-        
-        return values.equals(sorted);
+// TC-005 Fix: Add numeric sorting methods
+public boolean isSortedAscending(List<String> values) {
+    if (values.size() <= 1) {
+        return true;
     }
+    
+    // Check if values are numeric (prices)
+    if (isNumericList(values)) {
+        return isNumericallySortedAscending(values);
+    }
+    
+    // String sorting for text columns
+    List<String> sorted = new ArrayList<>(values);
+    sorted.sort(String::compareToIgnoreCase);
+    
+    System.out.println("Original: " + values);
+    System.out.println("Expected (ASC): " + sorted);
+    
+    return values.equals(sorted);
+}
+
+public boolean isSortedDescending(List<String> values) {
+    if (values.size() <= 1) {
+        return true;
+    }
+    
+    // Check if values are numeric (prices)
+    if (isNumericList(values)) {
+        return isNumericallySortedDescending(values);
+    }
+    
+    // String sorting for text columns
+    List<String> sorted = new ArrayList<>(values);
+    sorted.sort((a, b) -> b.compareToIgnoreCase(a));
+    
+    System.out.println("Original: " + values);
+    System.out.println("Expected (DESC): " + sorted);
+    
+    return values.equals(sorted);
+}
+
+private boolean isNumericList(List<String> values) {
+    if (values.isEmpty()) return false;
+    
+    try {
+        // Try parsing first value as double
+        Double.parseDouble(values.get(0).replace(",", ""));
+        return true;
+    } catch (NumberFormatException e) {
+        return false;
+    }
+}
+
+private boolean isNumericallySortedAscending(List<String> values) {
+    List<Double> numericValues = values.stream()
+        .map(s -> Double.parseDouble(s.replace(",", "")))
+        .collect(java.util.stream.Collectors.toList());
+    
+    List<Double> sorted = new ArrayList<>(numericValues);
+    sorted.sort(Double::compare);
+    
+    System.out.println("Original (numeric): " + numericValues);
+    System.out.println("Expected ASC (numeric): " + sorted);
+    
+    return numericValues.equals(sorted);
+}
+
+private boolean isNumericallySortedDescending(List<String> values) {
+    List<Double> numericValues = values.stream()
+        .map(s -> Double.parseDouble(s.replace(",", "")))
+        .collect(java.util.stream.Collectors.toList());
+    
+    List<Double> sorted = new ArrayList<>(numericValues);
+    sorted.sort((a, b) -> Double.compare(b, a));
+    
+    System.out.println("Original (numeric): " + numericValues);
+    System.out.println("Expected DESC (numeric): " + sorted);
+    
+    return numericValues.equals(sorted);
+}
 
  
 
