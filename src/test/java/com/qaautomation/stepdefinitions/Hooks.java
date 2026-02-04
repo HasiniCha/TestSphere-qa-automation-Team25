@@ -12,12 +12,25 @@ public class Hooks {
 
     @Before
     public void setUp() {
+        
+        if (driver != null) {
+            try {
+                driver.quit();
+            } catch (Exception e) {
+                
+            }
+            driver = null;
+        }
+        
+      
         driver = DriverFactory.initDriver();
         driver.get(ConfigReader.get("app.url"));
     }
 
     @After
     public void tearDown() {
+       
         DriverFactory.quitDriver();
+        driver = null;
     }
 }
