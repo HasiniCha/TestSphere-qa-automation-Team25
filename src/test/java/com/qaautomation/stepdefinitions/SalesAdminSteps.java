@@ -18,14 +18,13 @@ public class SalesAdminSteps {
     // Background step
     @Given("User is logged in and on Dashboard")
     public void user_is_logged_in_and_on_dashboard() {
-        
         Hooks.driver.get(ConfigReader.get("app.url"));
-        
         loginPage.loginAsAdmin();
-       
         Assert.assertTrue("Should be on Dashboard", dashboardPage.isOnDashboard());
     }
 
+
+    //Sales admin steps
     @When("Admin clicks View Sales")
     public void admin_clicks_view_sales() {
         dashboardPage.clickViewSalesButton();
@@ -64,9 +63,23 @@ public class SalesAdminSteps {
         sellPlantPage.clickSell();
     }
 
+    // TC-001: validation error
     @Then("Error message {string} is displayed")
     public void error_message_displayed(String expected) {
+        String actualMessage = sellPlantPage.getErrorMessage();
         Assert.assertEquals("Error message text mismatch", 
-                           expected, sellPlantPage.getErrorMessage());
+                           expected, actualMessage);
+    }
+
+    // TC-002: validation error
+    @When("Admin selects plant {string} from dropdown")
+    public void admin_selects_plant(String plant) {
+        sellPlantPage.selectPlant(plant);
+    }
+
+    @Then("Quantity validation message is displayed")
+    public void quantity_validation_message_displayed() {
+        Assert.assertTrue("HTML5 quantity validation message should be displayed",
+                         sellPlantPage.hasQuantityValidationMessage());
     }
 }
