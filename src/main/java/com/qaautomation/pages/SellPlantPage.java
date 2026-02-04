@@ -17,6 +17,10 @@ public class SellPlantPage extends BasePage {
         super(driver);
     }
 
+    public boolean isOnSellPlantPage() {
+    return driver.getCurrentUrl().contains("/new");
+}
+
     public void selectPlant(String plantName) {
         Select select = new Select(wait.until(
                 ExpectedConditions.visibilityOfElementLocated(plantDropdown)));

@@ -1,5 +1,6 @@
 package com.qaautomation.stepdefinitions;
 
+import com.qaautomation.pages.DashboardPage;
 import com.qaautomation.pages.LoginPage;
 import com.qaautomation.pages.SalesPage;
 import com.qaautomation.pages.SellPlantPage;
@@ -10,17 +11,31 @@ import org.junit.Assert;
 public class SalesAdminSteps {
 
     LoginPage loginPage = new LoginPage(Hooks.driver);
+    DashboardPage dashboardPage = new DashboardPage(Hooks.driver);
     SalesPage salesPage = new SalesPage(Hooks.driver);
     SellPlantPage sellPlantPage = new SellPlantPage(Hooks.driver);
 
-    @Given("Admin is logged in")
-    public void admin_is_logged_in() {
+    // Background step
+    @Given("User is logged in and on Dashboard")
+    public void user_is_logged_in_and_on_dashboard() {
+        
+        Hooks.driver.get(ConfigReader.get("app.url"));
+        
         loginPage.loginAsAdmin();
+       
+        Assert.assertTrue("Should be on Dashboard", dashboardPage.isOnDashboard());
     }
 
-    @Given("Admin is on the Sales page")
-    public void admin_is_on_sales_page() {
-        Hooks.driver.get(ConfigReader.get("app.sales.url"));
+    @When("Admin clicks View Sales")
+    public void admin_clicks_view_sales() {
+        dashboardPage.clickViewSalesButton();
+    }
+
+    @Then("Admin should be on the Sales page")
+    public void admin_should_be_on_the_sales_page() {
+        String currentUrl = Hooks.driver.getCurrentUrl();
+        Assert.assertTrue("Should be on Sales page", 
+                         currentUrl.contains("/sales"));
     }
 
     @When("Admin clicks Sell Plant button")
@@ -28,9 +43,15 @@ public class SalesAdminSteps {
         salesPage.clickSellPlantButton();
     }
 
+    @Then("Admin should be on the Sell Plant page")
+    public void admin_should_be_on_sell_plant_page() {
+        Assert.assertTrue("Should be on Sell Plant page", 
+                         sellPlantPage.isOnSellPlantPage());
+    }
+
     @When("Admin leaves the plant dropdown empty")
     public void admin_leaves_plant_empty() {
-        // No action needed - just don't select anything
+        
     }
 
     @When("Admin enters quantity {string}")
@@ -45,6 +66,7 @@ public class SalesAdminSteps {
 
     @Then("Error message {string} is displayed")
     public void error_message_displayed(String expected) {
-        Assert.assertEquals(expected, sellPlantPage.getErrorMessage());
+        Assert.assertEquals("Error message text mismatch", 
+                           expected, sellPlantPage.getErrorMessage());
     }
 }
