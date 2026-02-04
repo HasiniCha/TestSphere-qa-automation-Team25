@@ -1,7 +1,7 @@
 Feature: Sales Admin UI
 
   Background:
-    Given User is logged in and on Dashboard
+    Given Admin is logged in and on Dashboard
 
   @TC-001_Admin @validation
   Scenario: TC-UI-SALES-ADMIN-001 Plant selection field is required
@@ -21,7 +21,7 @@ Feature: Sales Admin UI
     Then Admin should be on the Sales page
     When Admin clicks Sell Plant button
     Then Admin should be on the Sell Plant page
-    When Admin selects plant "plant 10 (Stock: 6)" from dropdown
+    When Admin selects plant "plant 10 (Stock: 7)" from dropdown
     And Admin enters quantity "0"
     And Admin clicks the "Sell" button
     Then Quantity validation message is displayed
@@ -32,17 +32,17 @@ Feature: Sales Admin UI
     Then Admin should be on the Sales page
     When Admin clicks Sell Plant button
     Then Admin should be on the Sell Plant page
-    When Admin selects plant "abcd (Stock: 4)" from dropdown
-    And Admin enters quantity "1"
+    When Admin selects plant "plant 2 (Stock: 20)" from dropdown
+    And Admin enters quantity "5"
     And Admin clicks the "Sell" button
     Then Admin should be redirected to the Sales page
-    And New sale should appear in the sales list with plant "abcd" and quantity "1"
+    And New sale should appear in the sales list with plant "plant 2" and quantity "5"
     When Admin navigates to Plants page
-    Then Stock of plant "abcd" should be reduced to "3"
+    Then Stock of plant "plant 2" should be reduced to "15"
 
   @TC-004_Admin @Positive
   Scenario: TC-UI-SALES-ADMIN-004 Successfully delete a sales record
-    Give at least one sales record exists
+    Given at least one sales record exists
     When Admin clicks View Sales
     Then Admin should be on the Sales page
     When Admin clicks Delete icon on action column

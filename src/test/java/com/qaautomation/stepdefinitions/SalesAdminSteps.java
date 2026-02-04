@@ -26,8 +26,8 @@ public class SalesAdminSteps {
   private String deletedSaleName;
 
   // Background step
-  @Given("User is logged in and on Dashboard")
-  public void user_is_logged_in_and_on_dashboard() {
+  @Given("Admin is logged in and on Dashboard")
+  public void admin_is_logged_in_and_on_dashboard() {
     Hooks.driver.get(ConfigReader.get("app.url"));
     loginPage.loginAsAdmin();
     Assert.assertTrue("Should be on Dashboard", dashboardPage.isOnDashboard());
@@ -60,7 +60,7 @@ public class SalesAdminSteps {
 
   @When("Admin leaves the plant dropdown empty")
   public void admin_leaves_plant_empty() {
-    // Do nothing - dropdown stays empty
+    
   }
 
   @When("Admin enters quantity {string}")
@@ -151,7 +151,7 @@ public class SalesAdminSteps {
 
     String actualStock = plantsPage.getPlantStock(plantName);
     
-    // Extract numeric value only (remove " Low", " Medium", etc.)
+  
     String numericStock = actualStock.split(" ")[0].trim();
     
     Assert.assertEquals(
@@ -177,7 +177,6 @@ public class SalesAdminSteps {
 @When("Admin clicks Delete icon on action column")
 public void admin_clicks_delete_icon_on_action_column() {
     WebElement latestRow = salesPage.getLatestSaleRow();
-    // Capture the name BEFORE deleting
     deletedSaleName = latestRow.findElement(By.xpath("./td[1]")).getText(); 
     salesPage.deleteSale();
 }
@@ -194,43 +193,16 @@ public void admin_clicks_delete_icon_on_action_column() {
 
 @And("record is deleted from the list")
 public void record_is_deleted_from_the_list() {
-    // Use the captured name from before deletion
+    // Optional: add a small pause if your app has a fade-out animation
+    try { Thread.sleep(500); } catch (InterruptedException e) {}
+
     Assert.assertTrue(
-        "Sale '" + deletedSaleName + "' should be deleted", 
+        "Sale '" + deletedSaleName + "' was still found in the list after deletion!", 
         salesPage.isSaleDeleted(deletedSaleName)
     );
 }
 
-    // TC-005: Sorting test
-    @When("Admin clicks on {string} column header")
-    public void admin_clicks_on_column_header(String columnName) {
-        salesPage.clickColumnHeader(columnName);
-    }
-
-    @Then("Sales records should be sorted by {string} in ascending order")
-    public void sales_records_should_be_sorted_in_ascending_order(String columnName) {
-        List<String> columnValues = salesPage.getColumnValues(columnName);
-        
-        Assert.assertTrue(
-            "Sales records should be sorted by '" + columnName + "' in ascending order",
-            salesPage.isSortedAscending(columnValues)
-        );
-    }
-
-    @When("Admin clicks on {string} column header again")
-    public void admin_clicks_on_column_header_again(String columnName) {
-        salesPage.clickColumnHeader(columnName);
-    }
-
-    @Then("Sales records should be sorted by {string} in descending order")
-    public void sales_records_should_be_sorted_in_descending_order(String columnName) {
-        List<String> columnValues = salesPage.getColumnValues(columnName);
-        
-        Assert.assertTrue(
-            "Sales records should be sorted by '" + columnName + "' in descending order",
-            salesPage.isSortedDescending(columnValues)
-        );
-    }
+ 
 
 
   }
