@@ -8,6 +8,9 @@ import com.qaautomation.pages.SellPlantPage;
 import com.qaautomation.pages.SidebarNavigation;
 import com.qaautomation.utils.ConfigReader;
 import io.cucumber.java.en.*;
+
+import java.util.List;
+
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -187,6 +190,37 @@ public void record_is_deleted_from_the_list() {
     String saleName = latestRow != null ? latestRow.findElement(By.xpath("./td[1]")).getText() : "";
     Assert.assertTrue("Sale should be deleted", salesPage.isSaleDeleted(saleName));
 }
+
+    // TC-005: Sorting test
+    @When("Admin clicks on {string} column header")
+    public void admin_clicks_on_column_header(String columnName) {
+        salesPage.clickColumnHeader(columnName);
+    }
+
+    @Then("Sales records should be sorted by {string} in ascending order")
+    public void sales_records_should_be_sorted_in_ascending_order(String columnName) {
+        List<String> columnValues = salesPage.getColumnValues(columnName);
+        
+        Assert.assertTrue(
+            "Sales records should be sorted by '" + columnName + "' in ascending order",
+            salesPage.isSortedAscending(columnValues)
+        );
+    }
+
+    @When("Admin clicks on {string} column header again")
+    public void admin_clicks_on_column_header_again(String columnName) {
+        salesPage.clickColumnHeader(columnName);
+    }
+
+    @Then("Sales records should be sorted by {string} in descending order")
+    public void sales_records_should_be_sorted_in_descending_order(String columnName) {
+        List<String> columnValues = salesPage.getColumnValues(columnName);
+        
+        Assert.assertTrue(
+            "Sales records should be sorted by '" + columnName + "' in descending order",
+            salesPage.isSortedDescending(columnValues)
+        );
+    }
 
 
   }
