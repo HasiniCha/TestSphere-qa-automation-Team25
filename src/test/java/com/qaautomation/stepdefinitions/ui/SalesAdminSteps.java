@@ -1,4 +1,4 @@
-package com.qaautomation.stepdefinitions;
+package com.qaautomation.stepdefinitions.ui;
 
 import com.qaautomation.pages.DashboardPage;
 import com.qaautomation.pages.LoginPage;
@@ -6,6 +6,7 @@ import com.qaautomation.pages.PlantsPage;
 import com.qaautomation.pages.SalesPage;
 import com.qaautomation.pages.SellPlantPage;
 import com.qaautomation.pages.SidebarNavigation;
+import com.qaautomation.stepdefinitions.Hooks;
 import com.qaautomation.utils.ConfigReader;
 import io.cucumber.java.en.*;
 

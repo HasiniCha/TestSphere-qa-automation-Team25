@@ -4,14 +4,16 @@ Feature: Sales User API Functionality
   @TC-API-SALES-USER-001 @Negative
   Scenario: Non-admin user cannot sell plant
     Given User is authenticated for API
-    When User sends a POST request to "/sales/plant/{plantId}" for plant 2 with quantity 5
+    And a plant with ID 5 exists and has valid stock
+    When User sends a POST request to "/sales/plant/{plantId}" for plant 5 with quantity 2
     Then the API returns 403 status code
     And the response error message should be "Access Denied"
 
   @TC-API-SALES-USER-002 @Negative
   Scenario: Non-admin user cannot delete a sale record
     Given User is authenticated for API
-    When User sends a DELETE request to "/sales/{id}" for sale ID 27
+    And a sale with ID 36 exists in the system
+    When User sends a DELETE request to "/sales/{id}" for sale ID 36
     Then the API returns 403 status code
 
   @TC-API-SALES-USER-003
@@ -38,6 +40,6 @@ Feature: Sales User API Functionality
   @TC-API-SALES-USER-005
   Scenario: Non-admin user retrieves sale by ID
     Given User is authenticated for API
-    When User sends a GET request to "/sales/{id}" for sale ID 39
+    When User sends a GET request to "/sales/{id}" for sale ID 44
     Then the API returns 200 status code
     

@@ -1,6 +1,8 @@
-package com.qaautomation.stepdefinitions;
+package com.qaautomation.stepdefinitions.ui;
 
 import com.qaautomation.pages.SalesPage;
+import com.qaautomation.stepdefinitions.Hooks;
+
 import io.cucumber.java.en.*;
 import java.util.List;
 import org.junit.Assert;
