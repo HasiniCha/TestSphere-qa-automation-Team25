@@ -1,4 +1,4 @@
-@API @User
+@API @User @Sales
 Feature: Sales User API Functionality
 
   @TC-API-SALES-USER-001 @Negative

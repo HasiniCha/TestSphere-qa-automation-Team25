@@ -1,4 +1,4 @@
-@API @Admin
+@API @Admin @Sales
 Feature: Sales API Functionality
 
   @TC-API-SALES-ADMIN-001
