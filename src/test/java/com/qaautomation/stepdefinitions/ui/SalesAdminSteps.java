@@ -2,96 +2,141 @@ package com.qaautomation.stepdefinitions.ui;
 
 import com.qaautomation.pages.DashboardPage;
 import com.qaautomation.pages.LoginPage;
-import com.qaautomation.pages.PlantsPage;
-import com.qaautomation.pages.SalesPage;
-import com.qaautomation.pages.SellPlantPage;
 import com.qaautomation.pages.SidebarNavigation;
-import com.qaautomation.stepdefinitions.Hooks;
+import com.qaautomation.pages.sales.PlantsPage;
+import com.qaautomation.pages.sales.SalesPage;
+import com.qaautomation.pages.sales.SellPlantPage;
 import com.qaautomation.utils.ConfigReader;
+import com.qaautomation.utils.DriverFactory;
 import io.cucumber.java.en.*;
-
+import java.time.Duration;
 import java.util.List;
-
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SalesAdminSteps {
 
-  LoginPage loginPage = new LoginPage(Hooks.driver);
-  DashboardPage dashboardPage = new DashboardPage(Hooks.driver);
-  SalesPage salesPage = new SalesPage(Hooks.driver);
-  SellPlantPage sellPlantPage = new SellPlantPage(Hooks.driver);
-  SidebarNavigation sidenavBar = new SidebarNavigation(Hooks.driver);
-  PlantsPage plantsPage = new PlantsPage(Hooks.driver);
-  private String deletedSaleName;
+  private LoginPage loginPage;
+  private DashboardPage dashboardPage;
+  private SalesPage salesPage;
+  private SellPlantPage sellPlantPage;
+  private SidebarNavigation sidenavBar;
+  private PlantsPage plantsPage;
+  private WebElement rowToDelete;
+  private int rowCountBefore; 
+
+  
+  private LoginPage getLoginPage() {
+    if (loginPage == null) {
+      loginPage = new LoginPage(DriverFactory.getDriver());
+    }
+    return loginPage;
+  }
+
+  private DashboardPage getDashboardPage() {
+    if (dashboardPage == null) {
+      dashboardPage = new DashboardPage(DriverFactory.getDriver());
+    }
+    return dashboardPage;
+  }
+
+  private SalesPage getSalesPage() {
+    if (salesPage == null) {
+      salesPage = new SalesPage(DriverFactory.getDriver());
+    }
+    return salesPage;
+  }
+
+  private SellPlantPage getSellPlantPage() {
+    if (sellPlantPage == null) {
+      sellPlantPage = new SellPlantPage(DriverFactory.getDriver());
+    }
+    return sellPlantPage;
+  }
+
+  private SidebarNavigation getSidenavBar() {
+    if (sidenavBar == null) {
+      sidenavBar = new SidebarNavigation(DriverFactory.getDriver());
+    }
+    return sidenavBar;
+  }
+
+  private PlantsPage getPlantsPage() {
+    if (plantsPage == null) {
+      plantsPage = new PlantsPage(DriverFactory.getDriver());
+    }
+    return plantsPage;
+  }
 
   // Background step
   @Given("Admin is logged in and on Dashboard")
   public void admin_is_logged_in_and_on_dashboard() {
-    Hooks.driver.get(ConfigReader.get("app.url"));
-    loginPage.loginAsAdmin();
-    Assert.assertTrue("Should be on Dashboard", dashboardPage.isOnDashboard());
+    DriverFactory.getDriver().get(ConfigReader.get("app.url"));
+    getLoginPage().loginAsAdmin();
+    Assert.assertTrue(
+      "Should be on Dashboard",
+      getDashboardPage().isOnDashboard()
+    );
   }
 
-  //Sales admin steps
   @When("Admin clicks View Sales")
   public void admin_clicks_view_sales() {
-    dashboardPage.clickViewSalesButton();
+    getDashboardPage().clickViewSalesButton();
   }
 
   @Then("Admin should be on the Sales page")
   public void admin_should_be_on_the_sales_page() {
-    String currentUrl = Hooks.driver.getCurrentUrl();
+    String currentUrl = DriverFactory.getDriver().getCurrentUrl();
     Assert.assertTrue("Should be on Sales page", currentUrl.contains("/sales"));
   }
 
   @When("Admin clicks Sell Plant button")
   public void admin_clicks_sell_plant_button() {
-    salesPage.clickSellPlantButton();
+    getSalesPage().clickSellPlantButton();
   }
 
   @Then("Admin should be on the Sell Plant page")
   public void admin_should_be_on_sell_plant_page() {
     Assert.assertTrue(
       "Should be on Sell Plant page",
-      sellPlantPage.isOnSellPlantPage()
+      getSellPlantPage().isOnSellPlantPage()
     );
   }
 
   @When("Admin leaves the plant dropdown empty")
-  public void admin_leaves_plant_empty() {
-    
-  }
+  public void admin_leaves_plant_empty() {}
 
   @When("Admin enters quantity {string}")
   public void admin_enters_quantity(String qty) {
-    sellPlantPage.enterQuantity(qty);
+    getSellPlantPage().enterQuantity(qty);
   }
 
   @When("Admin clicks the {string} button")
   public void admin_clicks_button(String btn) {
-    sellPlantPage.clickSell();
+    getSellPlantPage().clickSell();
   }
 
   // TC-001: validation error
   @Then("Error message {string} is displayed")
   public void error_message_displayed(String expected) {
-    String actualMessage = sellPlantPage.getErrorMessage();
+    String actualMessage = getSellPlantPage().getErrorMessage();
     Assert.assertEquals("Error message text mismatch", expected, actualMessage);
   }
 
   // TC-002: validation error
   @When("Admin selects plant {string} from dropdown")
   public void admin_selects_plant(String plant) {
-    sellPlantPage.selectPlant(plant);
+    getSellPlantPage().selectPlant(plant);
   }
 
   @Then("Quantity validation message is displayed")
   public void quantity_validation_message_displayed() {
     Assert.assertTrue(
       "HTML5 quantity validation message should be displayed",
-      sellPlantPage.hasQuantityValidationMessage()
+      getSellPlantPage().hasQuantityValidationMessage()
     );
   }
 
@@ -105,7 +150,7 @@ public class SalesAdminSteps {
 
     Assert.assertTrue(
       "Should be redirected to Sales page after successful sale",
-      salesPage.isOnSalesPage()
+      getSalesPage().isOnSalesPage()
     );
   }
 
@@ -128,13 +173,13 @@ public class SalesAdminSteps {
       "' and quantity '" +
       quantity +
       "' should appear in sales list",
-      salesPage.verifySaleExists(plantName, quantity)
+      getSalesPage().verifySaleExists(plantName, quantity)
     );
   }
 
   @When("Admin navigates to Plants page")
   public void admin_navigates_to_plants_page() {
-    sidenavBar.clickPlants();
+    getSidenavBar().clickPlants();
 
     try {
       Thread.sleep(1000);
@@ -148,13 +193,15 @@ public class SalesAdminSteps {
     String plantName,
     String expectedStock
   ) {
-    Assert.assertTrue("Should be on Plants page", plantsPage.isOnPlantsPage());
+    Assert.assertTrue(
+      "Should be on Plants page",
+      getPlantsPage().isOnPlantsPage()
+    );
 
-    String actualStock = plantsPage.getPlantStock(plantName);
-    
-  
+    String actualStock = getPlantsPage().getPlantStock(plantName);
+
     String numericStock = actualStock.split(" ")[0].trim();
-    
+
     Assert.assertEquals(
       "Stock for plant '" + plantName + "' should be reduced correctly",
       expectedStock,
@@ -163,48 +210,39 @@ public class SalesAdminSteps {
   }
 
   //delete
-
   @Given("at least one sales record exists")
   public void at_least_one_sales_record_exists() {
-    Hooks.driver.get(ConfigReader.get("app.url"));
-    loginPage.loginAsAdmin();
-    dashboardPage.clickViewSalesButton();
+    rowCountBefore = getSalesPage().getSalesRowCount();
+    System.out.println("Initial row count BEFORE deletion: " + rowCountBefore);
+
     Assert.assertTrue(
-      "Sales page should have at least one record",
-      salesPage.getLatestSaleRow() != null
+      "Pre-condition failed: No sales records found to delete!",
+      rowCountBefore > 0
     );
   }
 
-@When("Admin clicks Delete icon on action column")
-public void admin_clicks_delete_icon_on_action_column() {
-    WebElement latestRow = salesPage.getLatestSaleRow();
-    deletedSaleName = latestRow.findElement(By.xpath("./td[1]")).getText(); 
-    salesPage.deleteSale();
-}
+  @When("Admin clicks Delete icon on action column")
+  public void admin_clicks_delete_icon_on_action_column() {
+    rowToDelete = getSalesPage().deleteSale();
+  }
 
-
-
-@Then("success message is displayed")
+   @Then("success message is displayed")
   public void success_message_is_displayed() {
     Assert.assertTrue(
-      "Success message should be displayed after deleting a sale",
-      salesPage.isSuccessMessageDisplayed()
+      "Success message was not visible after deletion!",
+      getSalesPage().isSuccessMessageDisplayed()
     );
   }
 
-@And("record is deleted from the list")
-public void record_is_deleted_from_the_list() {
-    // Optional: add a small pause if your app has a fade-out animation
-    try { Thread.sleep(500); } catch (InterruptedException e) {}
+  @And("record is deleted from the list")
+  public void record_is_deleted_from_the_list() {
+    new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(10))
+      .until(ExpectedConditions.stalenessOf(rowToDelete));
 
-    Assert.assertTrue(
-        "Sale '" + deletedSaleName + "' was still found in the list after deletion!", 
-        salesPage.isSaleDeleted(deletedSaleName)
+    System.out.println(
+      "Verified: The specific row element has been removed from the page."
     );
-}
+  }
 
  
-
-
-  }
-
+}

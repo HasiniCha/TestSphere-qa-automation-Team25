@@ -8,7 +8,7 @@ public class DashboardPage extends BasePage {
 
     private By manageCategoriesButton = By.xpath("//a[contains(normalize-space(), 'Manage Categories')]");
     private By managePlantButton = By.xpath("//a[contains(normalize-space(), 'Manage Plants')]");
-private By viewSalesButton = By.xpath("//a[contains(normalize-space(), 'View Sales')]");
+    private By viewSalesButton = By.xpath("//a[contains(normalize-space(), 'View Sales')]");
 
     public DashboardPage(WebDriver driver) {
         super(driver);

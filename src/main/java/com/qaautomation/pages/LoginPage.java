@@ -29,7 +29,7 @@ public class LoginPage extends BasePage {
         click(loginButton);
     }
 
-    // NEW: Method to enter individual credentials for more granular testing
+
     public void enterUsername(String username) {
         type(usernameField, username);
     }
@@ -57,7 +57,7 @@ public String getErrorMessageText() {
 }
 
 public String getErrorMessageColor() {
-    // This gets the CSS color value (usually in rgba format)
+    
     return driver.findElement(errorAlert).getCssValue("color");
 }
 

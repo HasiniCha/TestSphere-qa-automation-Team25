@@ -18,7 +18,22 @@ Feature: Sales User UI
     Then User should be on the Sales page
     When User clicks on "Plant" column header
     Then Sales records should be sorted by "Plant" in ascending order
-    # ... (remaining sorting steps)
+    When User clicks on "Plant" column header again
+    Then Sales records should be sorted by "Plant" in descending order
+    When User clicks on "Quantity" column header
+    Then Sales records should be sorted by "Quantity" in ascending order
+    When User clicks on "Quantity" column header again
+    Then Sales records should be sorted by "Quantity" in descending order
+    When User clicks on "Total Price" column header
+    Then Sales records should be sorted by "Total Price" in ascending order
+    When User clicks on "Total Price" column header again
+    Then Sales records should be sorted by "Total Price" in descending order
+    When User clicks on "Sold At" column header
+    Then Sales records should be sorted by "Sold At" in ascending order
+    When User clicks on "Sold At" column header again
+    Then Sales records should be sorted by "Sold At" in descending order
+
+  
 
   @TC-003_User @Positive
   Scenario: TC-UI-SALES-USER-003 Pagination Verify that Users can navigate through multiple pages

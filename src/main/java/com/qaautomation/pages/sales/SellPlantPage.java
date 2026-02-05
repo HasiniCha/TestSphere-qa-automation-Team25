@@ -1,10 +1,12 @@
-package com.qaautomation.pages;
+package com.qaautomation.pages.sales;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+
+import com.qaautomation.pages.BasePage;
 
 public class SellPlantPage extends BasePage {
 
@@ -42,7 +44,7 @@ public class SellPlantPage extends BasePage {
         return getText(errorMsg);  
     }
 
-    //  quantity validation
+    // quantity validation
     public String getQuantityValidationMessage() {
         WebElement qty = driver.findElement(quantityField);
         return qty.getAttribute("validationMessage");

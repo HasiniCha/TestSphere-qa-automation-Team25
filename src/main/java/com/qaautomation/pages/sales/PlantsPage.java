@@ -1,9 +1,11 @@
-package com.qaautomation.pages;
+package com.qaautomation.pages.sales;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import com.qaautomation.pages.BasePage;
 
 public class PlantsPage extends BasePage {
 

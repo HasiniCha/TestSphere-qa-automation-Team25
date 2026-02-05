@@ -1,4 +1,4 @@
-@UI @API
+@UI @Admin
 Feature: Sales Admin UI
 
   Background:
@@ -22,7 +22,7 @@ Feature: Sales Admin UI
     Then Admin should be on the Sales page
     When Admin clicks Sell Plant button
     Then Admin should be on the Sell Plant page
-    When Admin selects plant "plant 10 (Stock: 7)" from dropdown
+    When Admin selects plant "plant 10 (Stock: 6)" from dropdown
     And Admin enters quantity "0"
     And Admin clicks the "Sell" button
     Then Quantity validation message is displayed
@@ -33,22 +33,24 @@ Feature: Sales Admin UI
     Then Admin should be on the Sales page
     When Admin clicks Sell Plant button
     Then Admin should be on the Sell Plant page
-    When Admin selects plant "plant 2 (Stock: 20)" from dropdown
-    And Admin enters quantity "5"
+    When Admin selects plant "plant 10 (Stock: 6)" from dropdown
+    And Admin enters quantity "3"
     And Admin clicks the "Sell" button
     Then Admin should be redirected to the Sales page
-    And New sale should appear in the sales list with plant "plant 2" and quantity "5"
+    And New sale should appear in the sales list with plant "plant 10" and quantity "3"
     When Admin navigates to Plants page
-    Then Stock of plant "plant 2" should be reduced to "15"
+    Then Stock of plant "plant 10" should be reduced to "3"
 
   @TC-004_Admin @Positive
   Scenario: TC-UI-SALES-ADMIN-004 Successfully delete a sales record
-    Given at least one sales record exists
     When Admin clicks View Sales
     Then Admin should be on the Sales page
+    And at least one sales record exists
     When Admin clicks Delete icon on action column
     Then success message is displayed
     And record is deleted from the list
+    
+    
 
   @TC-005_Admin @Positive
   Scenario: TC-UI-SALES-ADMIN-005 Sort sales records by Plant Name and Quantity
