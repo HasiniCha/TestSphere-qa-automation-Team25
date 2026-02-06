@@ -126,9 +126,6 @@ public void plants_exist_in_a_specific_category() {
     if (plantsResponse.getStatusCode() == 200) {
         try {
           
-            System.out.println("=== PLANTS RESPONSE DEBUG ===");
-            System.out.println("Response: " + plantsResponse.prettyPrint());
-            System.out.println("============================");
             
             List<Map<String, Object>> plants = plantsResponse.jsonPath().getList("content");
             Assert.assertTrue("At least one plant should exist", plants != null && plants.size() > 0);
@@ -242,10 +239,7 @@ public void user_sends_get_request_with_nonexistent_category_id(String endpoint)
   @And("Response contains summary with total plants and low stock count")
 public void verify_response_contains_summary() {
 
-    System.out.println("=== API RESPONSE DEBUG ===");
-    System.out.println("Response Body: " + response.getBody().asString());
-    System.out.println("=========================");
-    
+  
     Assert.assertNotNull("Total plants should not be null", response.jsonPath().get("totalPlants"));
     Assert.assertNotNull("Low stock plants should not be null", response.jsonPath().get("lowStockPlants")); 
     
