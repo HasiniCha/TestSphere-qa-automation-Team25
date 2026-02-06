@@ -6,12 +6,15 @@ import com.qaautomation.pages.DashboardPage;
 import io.cucumber.java.en.*;
 import org.junit.Assert;
 import com.qaautomation.utils.ConfigReader;
+import org.openqa.selenium.WebDriver;
+import com.qaautomation.utils.DriverFactory;
 
 public class UserPlantSteps {
 
-    private LoginPage loginPage = new LoginPage(Hooks.driver);
-    private PlantsPage plantsPage = new PlantsPage(Hooks.driver);
-    private DashboardPage dashboardPage = new DashboardPage(Hooks.driver);
+     private WebDriver driver = DriverFactory.getDriver();
+    private LoginPage loginPage = new LoginPage( driver);
+    private PlantsPage plantsPage = new PlantsPage( driver);
+    private DashboardPage dashboardPage = new DashboardPage( driver);
     
     private int initialPlantCount;
     private int filteredPlantCount;
@@ -23,12 +26,12 @@ public class UserPlantSteps {
     
     @Given("User is logged in")
     public void user_is_logged_in() {
-        Hooks.driver.get("http://localhost:8080/ui/login");
+         driver.get("http://localhost:8080/ui/login");
         loginPage.loginAsUser();
     
         try {
             Thread.sleep(2000);
-            String currentUrl = Hooks.driver.getCurrentUrl();
+            String currentUrl = driver.getCurrentUrl();
             System.out.println("✓ Login completed. Current URL: " + currentUrl);
             
         
@@ -54,15 +57,16 @@ public class UserPlantSteps {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
+            
             Thread.currentThread().interrupt();
         }
         
         System.out.println("DEBUG: Navigating to Plants page...");
-        System.out.println("DEBUG: Current URL before navigation: " + Hooks.driver.getCurrentUrl());
+        System.out.println("DEBUG: Current URL before navigation: " + DriverFactory.getDriver().getCurrentUrl());
         
         plantsPage.navigateToPlants();
         
-        System.out.println("DEBUG: Current URL after navigation: " + Hooks.driver.getCurrentUrl());
+        System.out.println("DEBUG: Current URL after navigation: " + DriverFactory.getDriver().getCurrentUrl());
         
   
         int maxRetries = 3;

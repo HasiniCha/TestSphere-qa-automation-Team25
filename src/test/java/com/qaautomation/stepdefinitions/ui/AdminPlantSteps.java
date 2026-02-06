@@ -4,17 +4,19 @@ import com.qaautomation.pages.LoginPage;
 import com.qaautomation.pages.PlantsPage;
 import io.cucumber.java.en.*;
 import org.junit.Assert;
+import org.openqa.selenium.WebDriver;
+import com.qaautomation.utils.DriverFactory;
 
 public class AdminPlantSteps {
-
-    private LoginPage loginPage = new LoginPage(Hooks.driver);
-    private PlantsPage plantsPage = new PlantsPage(Hooks.driver);
+    private WebDriver driver = DriverFactory.getDriver();
+    private LoginPage loginPage = new LoginPage(driver);
+    private PlantsPage plantsPage = new PlantsPage(driver);
     private String testPlantName = "Test Plant " + System.currentTimeMillis();
 
 
     @Given("Admin is logged in")
     public void admin_is_logged_in() {
-        Hooks.driver.get("http://localhost:8080/ui/login");
+        driver.get("http://localhost:8080/ui/login");
         loginPage.loginAsAdmin();
         plantsPage.navigateToPlants();
     }
@@ -81,7 +83,7 @@ public class AdminPlantSteps {
 
     @Then("Changes are saved to database")
     public void changes_saved_to_database() {
-        Hooks.driver.navigate().refresh();
+        DriverFactory.getDriver().navigate().refresh();
         Assert.assertTrue(plantsPage.isPlantUpdatedInList(testPlantName));
     }
 
