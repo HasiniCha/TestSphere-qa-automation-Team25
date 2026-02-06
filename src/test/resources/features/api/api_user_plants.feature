@@ -14,7 +14,7 @@ Feature: Plants User API Functionality
   @TC-API-PLANTS-USER-002
   Scenario: Get Plant Summary
     Given At least one plant exists in the api system
-    When User sends a GET request to "/api/plants/summary"
+    When Plant User sends a GET request to "/api/plants/summary"
     Then API should return 200 OK status code
     And Response contains summary with total plants and low stock count
 

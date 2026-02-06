@@ -11,7 +11,7 @@ Feature: Admin Category API Management
     @admin @api @update_category
     Scenario: Verify admin can successfully update an existing category with valid data
     Given Admin is authenticated via API
-    When Admin sends PUT request to "/api/categories/10" with valid category data
+    When Admin sends PUT request to "/api/categories/23" with valid category data
     Then Response status code should be 200
     And Response body should contain updated category name "uiuiuo"
 

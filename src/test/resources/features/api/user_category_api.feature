@@ -11,9 +11,9 @@ Feature: User Category API Management
    @user @api @get_specific_category
    Scenario: Verify that user can retrieve a specific category by providing a valid category ID
     Given User is authenticated via API
-    When User sends GET request to "/api/categories/8"
+    When User sends GET request to "/api/categories/22"
     Then User response status code should be 200
-    And User response body should contain category with ID 8
+    And User response body should contain category with ID 22
     And User response body should contain category details
 
     @user @api @get_category_invalid_id
@@ -27,7 +27,7 @@ Feature: User Category API Management
     @user @api @update_category_unauthorized
     Scenario: Verify that regular user without admin privileges cannot update an existing category
     Given User is authenticated via API
-    When User sends PUT request to "/api/categories/6" with body:
+    When User sends PUT request to "/api/categories/22" with body:
       """
       {
         "name": "hjjj",

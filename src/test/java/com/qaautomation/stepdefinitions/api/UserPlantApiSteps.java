@@ -173,7 +173,7 @@ public void plants_exist_in_a_specific_category() {
         response = request.get(ConfigReader.get("api.base.url") + endpoint.replace("{id}", String.valueOf(plantId)));
     }
 
-    @When("User sends a GET request to {string}")
+    @When("Plant User sends a GET request to {string}")
     public void user_sends_get_request(String endpoint) {
         request = RestAssured.given()
                 .header("Authorization", "Bearer " + token)

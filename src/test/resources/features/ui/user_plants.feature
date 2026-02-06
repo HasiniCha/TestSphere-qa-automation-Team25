@@ -6,7 +6,7 @@ Feature: User Plant Management
 
   @TC-UI-PLANTS-USER-001
   Scenario: Verify user can filter plant by category
-    Given User is logged in
+    Given User is logged in_Plant
     And User is on the Plants page
     And Plant list displays all plants
     When User clicks on the category filter dropdown
@@ -17,7 +17,7 @@ Feature: User Plant Management
 
   @TC-UI-PLANTS-USER-002
   Scenario: Reset button clears all input fields
-    Given User is logged in
+    Given User is logged in_Plant
     And User is on the Plants page
     When User enters plant name "Tulip" in search field
     And User selects category "Tulip" from dropdown
@@ -30,7 +30,7 @@ Feature: User Plant Management
 
   @TC-UI-PLANTS-USER-003
   Scenario: Verify Delete button is hidden for User role
-    Given User is logged in
+    Given User is logged in_Plant
     And User is on the Plants page
     When User observes the Actions column
     Then Delete button is not visible for any plant
@@ -38,7 +38,7 @@ Feature: User Plant Management
 
   @TC-UI-PLANTS-USER-004
   Scenario: Verify Edit button is hidden for User role
-    Given User is logged in
+    Given User is logged in_Plant
     And User is on the Plants page
     When User observes the Actions column
     Then Edit button is not visible for any plant
@@ -46,7 +46,7 @@ Feature: User Plant Management
 
    @TC-UI-PLANTS-USER-005
   Scenario: Verify low stock plant count displays on dashboard
-    Given User is logged in
+    Given User is logged in_Plant
     And At least one plant with quantity less than 5 exists
     When User navigates to dashboard at "/ui/dashboard"
     Then Dashboard displays Plant summary card

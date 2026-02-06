@@ -14,7 +14,7 @@ public class AdminPlantSteps {
     private String testPlantName = "Test Plant " + System.currentTimeMillis();
 
 
-    @Given("Admin is logged in")
+    @Given("Admin is logged in_Plant")
     public void admin_is_logged_in() {
         driver.get("http://localhost:8080/ui/login");
         loginPage.loginAsAdmin();
@@ -59,7 +59,7 @@ public class AdminPlantSteps {
         plantsPage.enterQuantity(quantity);
     }
 
-    @When("Admin clicks the {string} button")
+    @When("Admin clicks the {string} button_Plant")
     public void admin_clicks_button(String buttonName) {
         if (buttonName.equalsIgnoreCase("Save")) {
             plantsPage.clickSave();
@@ -109,7 +109,7 @@ public class AdminPlantSteps {
         plantsPage.enterPrice(price);
     }
 
-    @When("Admin enters quantity {string}")
+    @When("Admin enters quantity {string}_Plant")
     public void admin_enters_quantity(String quantity) {
         plantsPage.enterQuantity(quantity);
     }

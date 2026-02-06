@@ -24,7 +24,7 @@ public class UserPlantSteps {
     
     //Background steps
     
-    @Given("User is logged in")
+    @Given("User is logged in_Plant")
     public void user_is_logged_in() {
          driver.get("http://localhost:8080/ui/login");
         loginPage.loginAsUser();

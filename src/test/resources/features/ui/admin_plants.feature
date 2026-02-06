@@ -2,7 +2,7 @@
 Feature: Admin Plant Management
 
   Background:
-    Given Admin is logged in
+    Given Admin is logged in_Plant
     And Admin is on the Plants page
 
   @TC-UI-PLANTS-ADMIN-001
