@@ -22,24 +22,32 @@ Feature: Sales Admin UI
     Then Admin should be on the Sales page
     When Admin clicks Sell Plant button
     Then Admin should be on the Sell Plant page
-    When Admin selects plant "plant 10 (Stock: 6)" from dropdown
+    When Admin selects plant "<dropdownText>" from dropdown
     And Admin enters quantity "0"
     And Admin clicks the "Sell" button
     Then Quantity validation message is displayed
+      Examples:
+    | plantName | dropdownText         |
+    | plant 10  | plant 10 (Stock: 55) |
 
   @TC-003_Admin @Positive
-  Scenario: TC-UI-SALES-ADMIN-003 Successfully sell plant and verify stock reduction
+Scenario Outline: Successfully sell plant and verify stock reduction
     When Admin clicks View Sales
     Then Admin should be on the Sales page
     When Admin clicks Sell Plant button
     Then Admin should be on the Sell Plant page
-    When Admin selects plant "plant 10 (Stock: 6)" from dropdown
-    And Admin enters quantity "3"
+    When Admin selects plant "<dropdownText>" from dropdown
+    And Admin enters quantity "<qty>"
     And Admin clicks the "Sell" button
     Then Admin should be redirected to the Sales page
-    And New sale should appear in the sales list with plant "plant 10" and quantity "3"
+    And New sale should appear in the sales list with plant "<plantName>" and quantity "<qty>"
     When Admin navigates to Plants page
-    Then Stock of plant "plant 10" should be reduced to "3"
+    Then Stock of plant "<plantName>" should be reduced by <qty>
+
+  Examples:
+    | plantName | dropdownText          | qty |
+    | plant 10  | plant 10 (Stock: 55) | 5   |
+    
 
   @TC-004_Admin @Positive
   Scenario: TC-UI-SALES-ADMIN-004 Successfully delete a sales record

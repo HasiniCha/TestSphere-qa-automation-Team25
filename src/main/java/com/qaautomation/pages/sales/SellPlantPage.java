@@ -35,9 +35,16 @@ public class SellPlantPage extends BasePage {
         qtyField.sendKeys(quantity);
     }
 
-    public void clickSell() {
-        click(sellButton);  
+   public void clickSell() {
+    WebElement element = wait.until(ExpectedConditions.elementToBeClickable(sellButton));
+    try {
+        element.click();
+    } catch (Exception e) {
+        
+        org.openqa.selenium.JavascriptExecutor js = (org.openqa.selenium.JavascriptExecutor) driver;
+        js.executeScript("arguments[0].click();", element);
     }
+}
 
     
     public String getErrorMessage() {
@@ -55,4 +62,15 @@ public class SellPlantPage extends BasePage {
         String validationMsg = qty.getAttribute("validationMessage");
         return validationMsg != null && !validationMsg.isEmpty();
     }
+
+   public int getPlantStockFromDropdown(String fullText) {
+    
+    java.util.regex.Pattern p = java.util.regex.Pattern.compile("Stock: (\\d+)");
+    java.util.regex.Matcher m = p.matcher(fullText);
+    
+    if (m.find()) {
+        return Integer.parseInt(m.group(1)); // Returns the 75
+    }
+    return 0;
+}
 }

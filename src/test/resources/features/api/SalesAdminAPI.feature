@@ -5,7 +5,7 @@ Feature: Sales API Functionality
   Scenario: Sell plant with valid request
     Given Admin is authenticated for API
     And a plant with ID 5 exists and has valid stock
-    When Admin sends a POST request to "/sales/plant/{plantId}" for plant 2 with quantity 20
+    When Admin sends a POST request to "/sales/plant/{plantId}" for plant 5 with quantity 5
     Then the API returns 201 status code
     And the response contains sale details
 
@@ -32,8 +32,8 @@ Feature: Sales API Functionality
  @TC-API-SALES-ADMIN-004 @Delete
  Scenario: Delete sale by ID
   Given Admin is authenticated for API
-  And a sale with ID 44 exists in the system
-  When Admin sends a DELETE request to "/sales/{id}" for sale ID 44
+  And a sale with ID 88 exists in the system
+  When Admin sends a DELETE request to "/sales/{id}" for sale ID 88
   Then the API returns 204 status code
 
   @TC-API-SALES-ADMIN-005 @Negative @Delete

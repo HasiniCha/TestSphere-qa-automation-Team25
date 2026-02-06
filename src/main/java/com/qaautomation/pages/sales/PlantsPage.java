@@ -32,4 +32,12 @@ public class PlantsPage extends BasePage {
             return "";
         }
     }
+
+
+    public int getPlantStockAsInt(String plantName) {
+    String fullText = getPlantStock(plantName); 
+    
+    String numericValue = fullText.replaceAll("[^0-9]", ""); 
+    return numericValue.isEmpty() ? 0 : Integer.parseInt(numericValue);
+}
 }

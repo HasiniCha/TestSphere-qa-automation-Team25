@@ -12,8 +12,8 @@ Feature: Sales User API Functionality
   @TC-API-SALES-USER-002 @Negative
   Scenario: Non-admin user cannot delete a sale record
     Given User is authenticated for API
-    And a sale with ID 35 exists in the system
-    When User sends a DELETE request to "/sales/{id}" for sale ID 35
+    And a sale with ID 85 exists in the system
+    When User sends a DELETE request to "/sales/{id}" for sale ID 85
     Then the API returns 403 status code
 
   @TC-API-SALES-USER-003
