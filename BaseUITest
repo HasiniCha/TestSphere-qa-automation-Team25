@@ -1,0 +1,166 @@
+package com.qatraining.tests.ui;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
+import java.util.Properties;
+import java.io.InputStream;
+
+public class BaseUITest {
+    
+    protected WebDriver driver;
+    protected WebDriverWait wait;
+    protected String baseUrl;
+    protected String adminUsername;
+    protected String adminPassword;
+    protected String userUsername;
+    protected String userPassword;
+    
+    @BeforeEach
+    public void setUp() {
+        // Load configuration
+        loadConfig();
+        
+        // Setup WebDriver
+        WebDriverManager.chromedriver().setup();
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--start-maximized");
+        options.addArguments("--disable-notifications");
+        // Uncomment for headless mode
+        // options.addArguments("--headless");
+        
+        driver = new ChromeDriver(options);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        
+        // Navigate to base URL
+        driver.get(baseUrl);
+    }
+    
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+    
+    private void loadConfig() {
+        try {
+            InputStream input = BaseUITest.class.getClassLoader()
+                    .getResourceAsStream("config.properties");
+            Properties prop = new Properties();
+            
+            if (input == null) {
+                System.out.println("Config file not found, using defaults");
+                baseUrl = "http://localhost:8080";
+                adminUsername = "admin";
+                adminPassword = "admin123";
+                userUsername = "testuser";
+                userPassword = "testuser";
+                return;
+            }
+            
+            prop.load(input);
+            baseUrl = prop.getProperty("base.url", "http://localhost:8080");
+            adminUsername = prop.getProperty("admin.username", "admin");
+            adminPassword = prop.getProperty("admin.password", "admin123");
+            userUsername = prop.getProperty("testuser.username", "testuser");
+            userPassword = prop.getProperty("testuser.password", "testuser");
+            input.close();
+        } catch (Exception e) {
+            System.out.println("Error loading config: " + e.getMessage());
+            baseUrl = "http://localhost:8080";
+            adminUsername = "admin";
+            adminPassword = "admin123";
+            userUsername = "testuser";
+            userPassword = "testuser";
+        }
+    }
+    
+    protected void login(String username, String password) {
+        // Navigate to login page
+        driver.get(baseUrl + "/ui/login");
+        
+        try {
+            // Wait for login form to load
+            Thread.sleep(2000);
+            
+            // Try multiple common selector patterns for username field
+            WebElement usernameField = null;
+            try {
+                usernameField = wait.until(ExpectedConditions.presenceOfElementLocated(
+                    By.id("username")
+                ));
+            } catch (Exception e) {
+                try {
+                    usernameField = driver.findElement(By.name("username"));
+                } catch (Exception e2) {
+                    usernameField = driver.findElement(
+                        By.cssSelector("input[type='text'], input[placeholder*='username'], input[placeholder*='Username']")
+                    );
+                }
+            }
+            
+            usernameField.clear();
+            usernameField.sendKeys(username);
+            
+            // Try multiple common selector patterns for password field
+            WebElement passwordField = null;
+            try {
+                passwordField = driver.findElement(By.id("password"));
+            } catch (Exception e) {
+                try {
+                    passwordField = driver.findElement(By.name("password"));
+                } catch (Exception e2) {
+                    passwordField = driver.findElement(
+                        By.cssSelector("input[type='password']")
+                    );
+                }
+            }
+            
+            passwordField.clear();
+            passwordField.sendKeys(password);
+            
+            // Try multiple common selector patterns for login button
+            WebElement loginButton = null;
+            try {
+                loginButton = driver.findElement(By.id("login-button"));
+            } catch (Exception e) {
+                try {
+                    loginButton = driver.findElement(By.cssSelector("button[type='submit']"));
+                } catch (Exception e2) {
+                    loginButton = driver.findElement(
+                        By.xpath("//button[contains(text(), 'Login') or contains(text(), 'Sign in')]")
+                    );
+                }
+            }
+            
+            loginButton.click();
+            
+            // Wait for login to complete (redirect or page change)
+            Thread.sleep(2000);
+            
+        } catch (Exception e) {
+            System.out.println("Login failed: " + e.getMessage());
+            System.out.println("Please verify the login page selectors match your application");
+            throw new RuntimeException("Login failed", e);
+        }
+    }
+    
+    protected void navigateToCategoriesPage() {
+        driver.get(baseUrl + "/ui/categories");
+        try {
+            Thread.sleep(1000); // Wait for page load
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
