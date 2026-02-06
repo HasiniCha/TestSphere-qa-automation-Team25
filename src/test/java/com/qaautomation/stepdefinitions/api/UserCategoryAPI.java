@@ -93,7 +93,7 @@ import io.restassured.response.Response;
 public class UserCategoryAPI {
 
     private Response response;
-    private String baseUrl = "http://localhost:3000";
+    private String baseUrl = "http://localhost:8080";
     private String token;
 
     // ================= AUTH =================

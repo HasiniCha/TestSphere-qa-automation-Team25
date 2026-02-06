@@ -210,15 +210,24 @@ public WebElement deleteSale() {
     if (values.size() <= 1) return true;
 
     if (isNumericList(values)) {
-      return isNumericallySortedDescending(values);
+        return isNumericallySortedDescending(values);
     }
 
-    List<String> sorted = new ArrayList<>(values);
-
-    sorted.sort(String.CASE_INSENSITIVE_ORDER.reversed());
-
-    return values.equals(sorted);
-  }
+    // Instead of sorting a copy and comparing lists, 
+    // compare items one-by-one to see if the order is broken.
+    for (int i = 0; i < values.size() - 1; i++) {
+        String current = values.get(i);
+        String next = values.get(i + 1);
+        
+        // compareTo returns < 0 if current comes before next
+        // In descending (Z-A), current should be >= next
+        if (current.compareToIgnoreCase(next) < 0) {
+            System.out.println("DEBUG: Sort failure. Found '" + current + "' followed by '" + next + "'");
+            return false;
+        }
+    }
+    return true;
+}
 
   private boolean isNumericList(List<String> values) {
     if (values.isEmpty()) return false;

@@ -40,7 +40,7 @@ public class UserCategory {
     @When("User navigates to the category list page")
     public void user_navigates_to_the_category_list_page() {
         WebDriver driver = DriverFactory.getDriver();
-        driver.get("http://localhost:3000/ui/categories");
+        driver.get("http://localhost:8080/ui/categories");
         userCategoryPage = new UserCategoryPage(driver);
         
         System.out.println(">>> User navigating to category list page...");
@@ -56,7 +56,7 @@ public class UserCategory {
     public void user_should_be_redirected_to_successfully(String expectedUrl) {
         WebDriver driver = DriverFactory.getDriver();
         String actualUrl = userCategoryPage.getCurrentUrl();
-        String fullExpectedUrl = "http://localhost:3000" + expectedUrl;
+        String fullExpectedUrl = "http://localhost:8080" + expectedUrl;
         
         System.out.println(">>> Expected URL: " + fullExpectedUrl);
         System.out.println(">>> Actual URL: " + actualUrl);

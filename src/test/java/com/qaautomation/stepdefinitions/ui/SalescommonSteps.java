@@ -67,14 +67,15 @@ public class SalescommonSteps {
   }
 
 
-  private void waitForTableRefresh() {
+ private void waitForTableRefresh() {
+    // 1. Give the UI a moment to start the sorting animation/request
     try {
-        // Wait for the 'active' page or any table overlay to disappear 
-        // OR wait for a small buffer if the table is using client-side sorting.
-        new WebDriverWait(DriverFactory.getDriver(), Duration.ofMillis(1500))
-            .until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("table tbody tr")));
+        Thread.sleep(800); 
+        // 2. Wait for the table body to be stable/visible
+        new WebDriverWait(DriverFactory.getDriver(), Duration.ofSeconds(5))
+            .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table tbody tr")));
     } catch (Exception e) {
-        // Fallback to a tiny sleep only if the dynamic wait fails
+        // Log error if needed
     }
 }
 }

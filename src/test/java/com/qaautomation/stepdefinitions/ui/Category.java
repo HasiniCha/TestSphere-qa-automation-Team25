@@ -38,7 +38,7 @@ public class Category {
     @And("Admin navigates to the Categories page")
     public void admin_navigates_to_categories_page() {
         WebDriver driver = DriverFactory.getDriver();
-        driver.get("http://localhost:3000/ui/categories");
+        driver.get("http://localhost:8080/ui/categories");
         categoryPage = new CategoryPage(driver);
         
         try {
@@ -78,7 +78,7 @@ public class Category {
         wait.until(ExpectedConditions.urlContains("/ui/categories/add"));
         
         String actualUrl = driver.getCurrentUrl();
-        String expectedUrl = "http://localhost:3000/ui/categories/add";
+        String expectedUrl = "http://localhost:8080/ui/categories/add";
         
         System.out.println(">>> Current URL: " + actualUrl);
         System.out.println(">>> Expected URL: " + expectedUrl);
@@ -101,7 +101,7 @@ public class Category {
         WebDriver driver = DriverFactory.getDriver();
         
         // First navigate to Categories page
-        driver.get("http://localhost:3000/ui/categories");
+        driver.get("http://localhost:8080/ui/categories");
         categoryPage = new CategoryPage(driver);
         
         try {
@@ -160,10 +160,10 @@ public class Category {
         WebDriver driver = DriverFactory.getDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         
-        wait.until(ExpectedConditions.urlToBe("http://localhost:3000/ui/categories"));
+        wait.until(ExpectedConditions.urlToBe("http://localhost:8080/ui/categories"));
         
         String actualUrl = driver.getCurrentUrl();
-        String expectedUrl = "http://localhost:3000/ui/categories";
+        String expectedUrl = "http://localhost:8080/ui/categories";
         
         System.out.println(">>> Redirected to: " + actualUrl);
         Assert.assertEquals("Not redirected to category list!", expectedUrl, actualUrl);
@@ -262,7 +262,7 @@ public class Category {
     public void admin_should_remain_on_add_category_page() {
         WebDriver driver = DriverFactory.getDriver();
         String currentUrl = driver.getCurrentUrl();
-        String expectedUrl = "http://localhost:3000/ui/categories/add";
+        String expectedUrl = "http://localhost:8080/ui/categories/add";
         
         System.out.println(">>> Current URL: " + currentUrl);
         System.out.println(">>> Expected URL: " + expectedUrl);

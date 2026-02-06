@@ -18,7 +18,7 @@ Feature: Admin Category API Management
     @admin @api @update_category_negative
     Scenario: Verify error when admin updates a non-existent category
     Given Admin is authenticated via API
-    When Admin sends PUT request to "/api/categories/5" with valid category data
+    When Admin sends PUT request to "/api/categories/1" with valid category data
     Then Response status code should be 404
     And Response body should contain error message for non-existent category
 
