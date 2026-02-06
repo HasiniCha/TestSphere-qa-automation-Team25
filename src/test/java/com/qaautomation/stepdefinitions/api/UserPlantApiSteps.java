@@ -319,6 +319,7 @@ public void verify_response_contains_only_plants_from_category() {
                           categoryId, plantCategoryId);
     }
     System.out.println("Verified all " + plants.size() + " plants belong to category ID: " + categoryId);
+    System.out.println(plants);
 }
 
     @And("User error message should be displayed")

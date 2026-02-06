@@ -31,7 +31,8 @@ Feature: Plants User API Functionality
     When User sends a GET request to "/api/plants/paged" with category filter
     Then API should return 200 OK status code
     And Response contains only plants from the specified category
-
+    
+@TC-API-PLANTS-USER-005
  Scenario: Get Plants by Category - Invalid Category
   Given User is authenticated for plants API
   When User sends a GET request to "/api/plants/category/{categoryId}" with non-existent category ID
