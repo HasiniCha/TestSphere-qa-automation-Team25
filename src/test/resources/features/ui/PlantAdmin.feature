@@ -1,4 +1,4 @@
-@AdminUI 
+@AdminUI @Nethmi
 Feature: Admin Plant Management
   As an admin
   I want to manage plants in the system

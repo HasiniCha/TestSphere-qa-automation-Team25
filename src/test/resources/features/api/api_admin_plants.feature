@@ -1,4 +1,4 @@
-@API @Admin @Plants
+@API @Admin @Plants @Hasini
 Feature: Plants Admin API Functionality
 
   Background:

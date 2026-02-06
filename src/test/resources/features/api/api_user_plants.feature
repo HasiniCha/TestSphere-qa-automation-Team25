@@ -1,4 +1,4 @@
-@API @User @Plants
+@API @User @Plants @Hasini
 Feature: Plants User API Functionality
 
   Background:

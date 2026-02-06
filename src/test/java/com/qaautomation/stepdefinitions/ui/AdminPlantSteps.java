@@ -114,7 +114,7 @@ public class AdminPlantSteps {
         plantsPage.enterQuantity(quantity);
     }
 
-    @Then("Error message is displayed")
+    @Then("Error message is displayed plant")
     public void error_message_is_displayed() {
         Assert.assertTrue("Error message should be visible", plantsPage.isErrorMessageDisplayed());
     }

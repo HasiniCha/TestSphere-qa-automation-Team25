@@ -1,4 +1,4 @@
-@UI
+@UI @Hasini
 Feature: User Plant Management
   As a User
   I want to view and filter plants
@@ -11,7 +11,7 @@ Feature: User Plant Management
     And Plant list displays all plants
     When User clicks on the category filter dropdown
     And User selects category "Rose"
-    And User clicks the "Search" button
+    And User clicks the "Search" button plant
     Then User plant list refreshes
     And Only plants from category "Rose" are displayed
 
@@ -21,9 +21,9 @@ Feature: User Plant Management
     And User is on the Plants page
     When User enters plant name "Tulip" in search field
     And User selects category "Tulip" from dropdown
-    And User clicks the "Search" button
+    And User clicks the "Search" button plant
     Then Filtered results are displayed
-    When User clicks the "Reset" button
+    When User clicks the "Reset" button plant
     Then Name search field is cleared
     And Category dropdown is reset to default state
     And Plant list displays all plants without filters

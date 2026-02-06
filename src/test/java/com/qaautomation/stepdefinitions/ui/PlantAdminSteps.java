@@ -43,7 +43,7 @@ public class PlantAdminSteps {
 
     @Given("User navigates to Plant edit page")
     public void user_navigates_to_plant_edit_page() {
-        DriverFactory.getDriver().get("http://localhost:8080/ui/plants/edit/1");
+        DriverFactory.getDriver().get("http://localhost:8080/ui/plants/edit/110");
     }
 
     // ================= ACTIONS =================

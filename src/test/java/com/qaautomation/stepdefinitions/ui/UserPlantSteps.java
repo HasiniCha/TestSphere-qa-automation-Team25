@@ -118,7 +118,7 @@ public class UserPlantSteps {
         System.out.println("Selected category: " + categoryName);
     }
 
-    @When("User clicks the {string} button")
+    @When("User clicks the {string} button plant")
     public void user_clicks_the_button(String buttonText) {
         if (buttonText.equalsIgnoreCase("Search")) {
             plantsPage.clickSearchButton();

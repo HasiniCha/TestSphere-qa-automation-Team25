@@ -1,4 +1,4 @@
-package com.qaautomation.stepdefinitions;
+package com.qaautomation.stepdefinitions.api;
 
 import static io.restassured.RestAssured.given;
 import io.cucumber.datatable.DataTable;

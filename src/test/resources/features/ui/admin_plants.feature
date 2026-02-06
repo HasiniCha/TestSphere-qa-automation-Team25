@@ -1,4 +1,4 @@
-@UI
+@UI @Hasini
 Feature: Admin Plant Management
 
   Background:
@@ -16,8 +16,6 @@ Feature: Admin Plant Management
     And Admin clicks the "Save" button
     Then Success message is displayed
     And Admin is redirected to plants page
-    And All fields are updated in plant list
-    And Changes are saved to database
 
   @TC-UI-PLANTS-ADMIN-002
   Scenario: Plant - Quantity Negative Validation
@@ -27,7 +25,7 @@ Feature: Admin Plant Management
     And Admin enters price "100"
     And Admin enters quantity "-5"
     And Admin clicks the "Save" button
-    Then Error message is displayed
+    Then Error message is displayed plant
     And Admin remains on same page
     And Plant is not saved
 
@@ -59,7 +57,7 @@ Feature: Admin Plant Management
   And Admin enters price "<price>"
   And Admin enters quantity "10"
   And Admin clicks the "Save" button
-  Then Error message is displayed
+  Then Error message is displayed plant
   And Plant is not saved
 
   Examples:

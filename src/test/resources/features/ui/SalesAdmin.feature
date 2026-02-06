@@ -1,4 +1,4 @@
-@UI @Admin
+@UI @Admin @Sales
 Feature: Sales Admin UI
 
   Background:
@@ -28,7 +28,7 @@ Feature: Sales Admin UI
     Then Quantity validation message is displayed
       Examples:
     | plantName | dropdownText         |
-    | plant A  | plant A (Stock: 200) |
+    | Plant A| Plant A (Stock: 100) |
 
   @TC-003_Admin @Positive
 Scenario Outline: Successfully sell plant and verify stock reduction
@@ -46,7 +46,7 @@ Scenario Outline: Successfully sell plant and verify stock reduction
 
   Examples:
     | plantName | dropdownText          | qty |
-    | plant A  | plant A (Stock: 200) | 5   |
+    | Plant A | Plant A (Stock: 100) | 5   |
     
 
   @TC-004_Admin @Positive
