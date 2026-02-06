@@ -19,4 +19,10 @@ public class LoginPage extends BasePage {
         type(passwordField, ConfigReader.get("app.admin.password"));
         click(loginButton);
     }
+
+    public void loginAsTestUser() {
+        type(usernameField, ConfigReader.get("app.user.username"));
+        type(passwordField, ConfigReader.get("app.user.password"));
+        click(loginButton);
+    }
 }
