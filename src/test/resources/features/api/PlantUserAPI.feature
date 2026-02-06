@@ -5,7 +5,7 @@ Feature: Plant Retrieval API (User)
   So that I can see what is available for purchase
 
   Background:
-    Given User is authenticated via API
+    User is authenticated via API for Plant
 
 @TC-API-PLANT-USER-001 @positive
   Scenario: Get All Plants

@@ -52,7 +52,7 @@ public class PlantUserAPISteps {
                 .contentType(ContentType.JSON);
     }
 
-    @Given("User is authenticated via API")
+    @Given("User is authenticated via API for Plant")
     public void user_is_authenticated_via_api() {
         authenticate("user");
     }

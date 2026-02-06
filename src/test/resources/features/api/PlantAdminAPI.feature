@@ -5,7 +5,7 @@ Feature: Plant Management API
   So that I can integrate with external systems and verify backend logic
 
   Background:
-    Given Admin is authenticated via API
+    Given Admin is authenticated via API for Plant
 
   @TC-API-PLANT-ADMIN001 @positive
   Scenario: Create Plant - Valid Data

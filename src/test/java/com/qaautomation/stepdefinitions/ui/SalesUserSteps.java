@@ -45,7 +45,7 @@ public class SalesUserSteps {
     return sidenav;
   }
 
-  @Given("User is logged in and on Dashboard")
+  @Given("Sale User is logged in and on Dashboard")
   public void user_is_logged_in_and_on_dashboard() {
     DriverFactory.getDriver().get(ConfigReader.get("app.url"));
     getLoginPage().loginAsUser();

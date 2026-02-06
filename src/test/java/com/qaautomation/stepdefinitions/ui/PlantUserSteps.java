@@ -23,14 +23,14 @@ public class PlantUserSteps {
         if (userType.equalsIgnoreCase("Admin")) {
             loginPage.loginAsAdmin();
         } else {
-            loginPage.loginAsTestUser();
+            loginPage.loginAsUser();
         }
     }
 
     @Given("User is logged in and on Dashboard")
     public void user_is_logged_in_and_on_dashboard() {
         driver.get("http://localhost:8080/ui/login");
-        loginPage.loginAsTestUser();
+        loginPage.loginAsUser();
     }
 
     @Given("User is on the Plant List page {string}")
@@ -137,5 +137,5 @@ public class PlantUserSteps {
     public void user_selects_from_the_category_filter_dropdown(String categoryName) {
     userPage.selectCategory(categoryName);
     }
-    
+
 }

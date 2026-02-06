@@ -2,7 +2,7 @@
 Feature: Sales User UI
 
   Background: 
-    Given User is logged in and on Dashboard
+    Sale User is logged in and on Dashboard
 
   @TC-001_User @Positive
   Scenario: TC-UI-SALES-USER-001 View sales list with user restrictions
