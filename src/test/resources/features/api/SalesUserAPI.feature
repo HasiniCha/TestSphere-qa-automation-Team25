@@ -40,6 +40,6 @@ Feature: Sales User API Functionality
   @TC-API-SALES-USER-005
   Scenario: Non-admin user retrieves sale by ID
     Given User is authenticated for API
-    When User sends a GET request to "/sales/{id}" for sale ID 5
+    When User sends a GET request for sales to "/api/sales/49"
     Then the API returns 200 status code
-    
+   
