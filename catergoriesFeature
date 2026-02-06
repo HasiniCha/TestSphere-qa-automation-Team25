@@ -1,0 +1,101 @@
+Feature: Categories Management UI
+  As a user/admin
+  I want to manage categories through the UI
+  So that I can perform CRUD operations on categories
+
+  Background:
+    Given the application is running
+    And test data is set up
+
+  @TC-UI-CATEGORY-ADMIN-001
+  Scenario: Search Category by Name as Admin
+    Given I am logged in as admin
+    And I am on the categories page
+    When I enter "Rose" in the search field
+    And I click the search button
+    Then only categories matching "Rose" should be displayed
+    And the category list should update correctly
+    And pagination should update based on search results
+
+  @TC-UI-CATEGORY-ADMIN-002
+  Scenario: Edit Category - Change Name and Parent
+    Given I am logged in as admin
+    And I am on the categories page
+    When I click the edit icon for the first category
+    And I change the category name to "UpdatedCat"
+    And I select a different parent category
+    And I click the save button
+    Then the category should be updated successfully
+    And I should be redirected to the category list page
+    And the updated category should be displayed with the correct name
+
+  @TC-UI-CATEGORY-ADMIN-003
+  Scenario: Add Sub-Category - Success
+    Given I am logged in as admin
+    And I am on the add category page
+    When I enter a valid category name "SubCat"
+    And I select an existing parent category
+    And I click the save button
+    Then the sub-category should be created successfully
+    And I should be redirected to the category list page
+    And the sub-category should be visible under the correct parent
+
+  @TC-UI-CATEGORY-ADMIN-004
+  Scenario: Sort Categories by Name
+    Given I am logged in as admin
+    And I am on the categories page
+    When I click on the "Name" column header
+    Then categories should be sorted alphabetically in ascending order
+    And the sort indicator should show ascending direction
+    And all categories should maintain their correct parent relationships
+
+  @TC-UI-CATEGORY-ADMIN-005
+  Scenario: Sort Categories by Parent
+    Given I am logged in as admin
+    And I am on the categories page
+    When I click on the "Parent" column header
+    Then categories should be grouped and sorted by parent category name
+    And main categories should appear first or last depending on sort direction
+    And sort should toggle between ascending and descending order
+
+  @TC-UI-CATEGORY-USER-001
+  Scenario: Search Category by Name as User
+    Given I am logged in as a regular user
+    And I am on the categories page
+    When I enter "Rose" in the search field
+    And I click the search button
+    Then only categories matching "Rose" should be displayed
+    And the category list should be present
+
+  @TC-UI-CATEGORY-USER-002
+  Scenario: Verify Delete icon is disabled for User
+    Given I am logged in as a regular user
+    And I am on the categories page
+    Then all delete icons should be disabled
+
+  @TC-UI-CATEGORY-USER-003
+  Scenario: Sort Categories by Name as User
+    Given I am logged in as a regular user
+    And I am on the categories page
+    When I click on the "Name" column header
+    Then categories should be sorted alphabetically in ascending order
+    And the sort indicator should show ascending direction
+    And all categories should maintain their correct parent relationships
+
+  @TC-UI-CATEGORY-USER-004
+  Scenario: Sort Categories by ID
+    Given I am logged in as a regular user
+    And I am on the categories page
+    When I click on the "ID" column header
+    Then categories should be sorted numerically by ID
+
+  @TC-UI-CATEGORY-USER-005
+  Scenario: Verify Next Page Navigation
+    Given I am logged in as a regular user
+    And I am on the categories page
+    And there are more than 10 categories
+    When I scroll to the bottom of the table
+    And I click the "Next" button
+    Then the table content should refresh with the next set of category records
+    And the "Previous" button should become enabled
+    And the pagination indicator should show Page 2
