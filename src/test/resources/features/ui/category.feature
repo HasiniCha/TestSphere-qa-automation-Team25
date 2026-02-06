@@ -13,13 +13,13 @@ Feature: Category Management
   Scenario: Verify successful creation of a main category
     Given Admin is logged in
     And Admin navigates to Add Category page
-    When Admin enters category name "Flowers"
+    When Admin enters category name "Flower"
     And Admin leaves Parent Category as default
     And Admin clicks Save button
     Then Main category should be created successfully
     And Admin should be redirected to category list page
-    And New category "Flowers" should be visible in the list
-    And Parent column should show "-" for category "Flowers"
+    And New category "Flower" should be visible in the list
+    And Parent column should show "-" for category "Flower"
 
      @admin @test3
   Scenario: Verify validation error for empty category name
@@ -46,12 +46,12 @@ Scenario: Verify validation error for category name length
 Scenario: Delete Category - Confirm Deletion
   Given Admin is logged in
   And Admin navigates to the Categories page
-  And Debug category row for "Flowers"
-  And Delete button is visible for category "Flowers"
-  When Admin clicks the Delete button for category "Flowers"
+  And Debug category row for "Flower"
+  And Delete button is visible for category "Flower"
+  When Admin clicks the Delete button for category "Flower"
   And Admin clicks OK/Confirm in the confirmation dialog
-  Then Category "Flowers" should be deleted successfully
+  Then Category "Flower" should be deleted successfully
   And Success message for deletion should be displayed
-  And Category "Flowers" should no longer be visible in the category list
+  And Category "Flower" should no longer be visible in the category list
 
   

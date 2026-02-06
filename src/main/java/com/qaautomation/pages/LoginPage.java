@@ -29,7 +29,6 @@ public class LoginPage extends BasePage {
         click(loginButton);
     }
 
-
     public void enterUsername(String username) {
         type(usernameField, username);
     }
@@ -49,7 +48,6 @@ public class LoginPage extends BasePage {
             return false;
         }
     }
-
 
 
 public String getErrorMessageText() {
