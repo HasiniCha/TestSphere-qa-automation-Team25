@@ -34,4 +34,7 @@ public class ConfigReader {
     public static boolean getBoolean(String key) {
         return Boolean.parseBoolean(get(key));
     }
+        public static String getProperty(String key) {
+        return properties.getProperty(key);
+    }
 }

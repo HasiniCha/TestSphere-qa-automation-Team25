@@ -10,14 +10,28 @@ public class Hooks {
 
     public static WebDriver driver;
 
-    @Before
+    
+    @Before("not @API")
     public void setUp() {
+        if (driver != null) {
+            try {
+                driver.quit();
+            } catch (Exception e) {
+              
+            }
+            driver = null;
+        }
+        
         driver = DriverFactory.initDriver();
         driver.get(ConfigReader.get("app.url"));
     }
 
-    @After
+    
+    @After("not @API")
     public void tearDown() {
-        DriverFactory.quitDriver();
+        if (driver != null) {
+            DriverFactory.quitDriver();
+            driver = null;
+        }
     }
 }
