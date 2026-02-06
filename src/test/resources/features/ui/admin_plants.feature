@@ -44,7 +44,7 @@ Feature: Admin Plant Management
   Scenario: Plant - Low Stock Badge Display
     When Admin navigates to add plant page
     And Admin enters plant name "Low Stock"
-    And Admin selects category "Succulent"
+    And Admin selects category "Rose"
     And Admin enters price "50"
     And Admin enters quantity "3"
     And Admin clicks the "Save" button

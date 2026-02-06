@@ -20,7 +20,7 @@ Feature: User Plant Management
     Given User is logged in
     And User is on the Plants page
     When User enters plant name "Tulip" in search field
-    And User selects category "Succulent" from dropdown
+    And User selects category "Tulip" from dropdown
     And User clicks the "Search" button
     Then Filtered results are displayed
     When User clicks the "Reset" button

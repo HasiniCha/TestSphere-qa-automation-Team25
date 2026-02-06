@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.ui.Select;
 import java.time.Duration;
 import java.util.List;
@@ -355,51 +357,76 @@ public class PlantsPage extends BasePage {
 
   
     public int getPlantCountWithQuantityLessThan(int threshold) {
-        try {
-        
+    int totalLowStockCount = 0;
+    int pageNumber = 1;
+    
+    try {
+        while (true) {
             wait.until(ExpectedConditions.presenceOfElementLocated(plantsTable));
+            Thread.sleep(500);
             
-           
             List<WebElement> rows = driver.findElements(allTableRows);
             
-            int lowStockCount = 0;
-            
+            // Count low stock plants on current page
             for (WebElement row : rows) {
                 try {
-            
                     List<WebElement> cells = row.findElements(By.tagName("td"));
                     
                     if (cells.size() >= 4) {
-                    
                         WebElement stockCell = cells.get(3);
-                    try {
+                        try {
                             WebElement quantitySpan = stockCell.findElement(By.tagName("span"));
-                            String quantityText = quantitySpan.getText().trim();
-                            
-                            int quantity = Integer.parseInt(quantityText);
+                            int quantity = Integer.parseInt(quantitySpan.getText().trim());
                             
                             if (quantity < threshold) {
-                                lowStockCount++;
+                                totalLowStockCount++;
                                 System.out.println("   Low stock plant found: " + cells.get(0).getText() + " - quantity = " + quantity);
                             }
                         } catch (NumberFormatException e) {
-                            System.out.println("Skipping non-numeric quantity in row");
+                            // Skip non-numeric
                         }
                     }
                 } catch (Exception e) {
-                    System.out.println("Could not parse quantity for a row: " + e.getMessage());
+                    // Skip invalid row
                 }
             }
             
-            System.out.println("   Found " + lowStockCount + " plants with quantity < " + threshold);
-            return lowStockCount;
+            // Check for next page
+            try {
+                List<WebElement> nextCandidates = driver.findElements(
+                    By.xpath("//ul[@class='pagination']//li[.//a[contains(text(), 'Next')]]")
+                );
+                
+                if (nextCandidates.isEmpty() || 
+                    nextCandidates.get(0).getAttribute("class").contains("disabled")) {
+                    break;
+                }
+                
+                // Navigate to next page
+                WebElement nextLink = nextCandidates.get(0).findElement(By.tagName("a"));
+                ((JavascriptExecutor) driver).executeScript(
+                    "arguments[0].scrollIntoView({block: 'center'});", nextLink
+                );
+                Thread.sleep(300);
+                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextLink);
+                Thread.sleep(1000);
+                pageNumber++;
+                
+            } catch (Exception e) {
+                break;
+            }
             
-        } catch (Exception e) {
-            System.out.println("Error counting low stock plants: " + e.getMessage());
-            e.printStackTrace();
-            return 0;
+            if (pageNumber > 10) break; // Safety limit
         }
+        
+        System.out.println("   Found " + totalLowStockCount + " plants with quantity < " + threshold + " across " + pageNumber + " page(s)");
+        return totalLowStockCount;
+        
+    } catch (Exception e) {
+        System.out.println("Error counting low stock plants: " + e.getMessage());
+        return totalLowStockCount;
     }
+}
 
     public int getPlantCount() {
         try {
@@ -410,4 +437,5 @@ public class PlantsPage extends BasePage {
             return 0;
         }
     }
+    
 }
