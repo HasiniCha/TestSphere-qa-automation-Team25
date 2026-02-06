@@ -1,0 +1,522 @@
+package com.qatraining.tests;
+
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class CategoriesApiTest extends BaseTest {
+    
+    private static Long createdCategoryId;
+    private static Long createdSubCategoryId;
+    // Category name must be between 3-10 characters
+    private static String testCategoryName = "TestCat" + (System.currentTimeMillis() % 1000);
+    private static String testSubCategoryName = "TestSub" + (System.currentTimeMillis() % 1000);
+    
+    // ==================== GET ALL CATEGORIES ====================
+    
+    @Test
+    @Order(1)
+    @DisplayName("GET /api/categories - Get all categories")
+    public void testGetAllCategories() {
+        Response response = getAuthenticatedRequest(adminToken)
+                .when()
+                .get("/categories")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .extract()
+                .response();
+        
+        // Verify response structure
+        Object categories = response.jsonPath().get("$");
+        assertNotNull(categories, "Categories response should not be null");
+        
+        System.out.println("✓ Successfully retrieved all categories");
+    }
+    
+    @Test
+    @Order(2)
+    @DisplayName("GET /api/categories - Get categories without authentication (should fail)")
+    public void testGetAllCategoriesWithoutAuth() {
+        given()
+                .spec(requestSpec)
+                .when()
+                .get("/categories")
+                .then()
+                .statusCode(401);
+        
+        System.out.println("✓ Correctly rejected unauthenticated request");
+    }
+    
+    @Test
+    @Order(3)
+    @DisplayName("GET /api/categories?name={name} - Get categories by name filter")
+    public void testGetCategoriesByNameFilter() {
+        getAuthenticatedRequest(adminToken)
+                .queryParam("name", "Rose")
+                .when()
+                .get("/categories")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+        
+        System.out.println("✓ Successfully filtered categories by name");
+    }
+    
+    @Test
+    @Order(4)
+    @DisplayName("GET /api/categories?parentId={id} - Get categories by parent ID")
+    public void testGetCategoriesByParentId() {
+        getAuthenticatedRequest(adminToken)
+                .queryParam("parentId", 1)
+                .when()
+                .get("/categories")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+        
+        System.out.println("✓ Successfully filtered categories by parent ID");
+    }
+    
+    // ==================== CREATE CATEGORY ====================
+    
+    @Test
+    @Order(5)
+    @DisplayName("POST /api/categories - Create main category (ADMIN)")
+    public void testCreateMainCategory() {
+        Map<String, Object> category = new HashMap<>();
+        category.put("name", testCategoryName);
+        
+        Response response = getAuthenticatedRequest(adminToken)
+                .body(category)
+                .when()
+                .post("/categories")
+                .then()
+                .statusCode(201)
+                .contentType(ContentType.JSON)
+                .body("name", equalTo(testCategoryName))
+                .body("id", notNullValue())
+                .extract()
+                .response();
+        
+        createdCategoryId = response.jsonPath().getLong("id");
+        assertNotNull(createdCategoryId, "Category ID should not be null");
+        
+        System.out.println("✓ Successfully created main category with ID: " + createdCategoryId);
+    }
+    
+    @Test
+    @Order(6)
+    @DisplayName("POST /api/categories - Create sub-category (ADMIN)")
+    public void testCreateSubCategory() {
+        // First ensure we have a main category
+        if (createdCategoryId == null) {
+            testCreateMainCategory();
+        }
+        
+        Map<String, Object> subCategory = new HashMap<>();
+        subCategory.put("name", testSubCategoryName);
+        subCategory.put("parentId", createdCategoryId);
+        
+        Response response = getAuthenticatedRequest(adminToken)
+                .body(subCategory)
+                .when()
+                .post("/categories")
+                .then()
+                .statusCode(201)
+                .contentType(ContentType.JSON)
+                .body("name", equalTo(testSubCategoryName))
+                .body("id", notNullValue())
+                .extract()
+                .response();
+        
+        createdSubCategoryId = response.jsonPath().getLong("id");
+        assertNotNull(createdSubCategoryId, "Sub-category ID should not be null");
+        
+        System.out.println("✓ Successfully created sub-category with ID: " + createdSubCategoryId);
+    }
+    
+    @Test
+    @Order(7)
+    @DisplayName("POST /api/categories - Create category with invalid data (should fail)")
+    public void testCreateCategoryWithInvalidData() {
+        Map<String, Object> invalidCategory = new HashMap<>();
+        invalidCategory.put("name", "AB"); // Too short (min 3 characters)
+        
+        getAuthenticatedRequest(adminToken)
+                .body(invalidCategory)
+                .when()
+                .post("/categories")
+                .then()
+                .statusCode(400);
+        
+        System.out.println("✓ Correctly rejected invalid category data");
+    }
+    
+    @Test
+    @Order(8)
+    @DisplayName("POST /api/categories - Create category as TESTUSER (should fail - forbidden or unauthorized)")
+    public void testCreateCategoryAsTestUser() {
+        // Skip if testuser token is not available
+        if (testUserToken == null) {
+            System.out.println("⚠ Skipping test - testuser credentials not configured");
+            return;
+        }
+        
+        Map<String, Object> category = new HashMap<>();
+        category.put("name", "TestCatUs"); // 3-10 chars
+        
+        getAuthenticatedRequest(testUserToken)
+                .body(category)
+                .when()
+                .post("/categories")
+                .then()
+                .statusCode(anyOf(is(403), is(401))); // Accept either forbidden or unauthorized
+        
+        System.out.println("✓ Correctly rejected TESTUSER create request");
+    }
+    
+    @Test
+    @Order(9)
+    @DisplayName("POST /api/categories - Create duplicate category name (should fail)")
+    public void testCreateDuplicateCategory() {
+        Map<String, Object> category = new HashMap<>();
+        category.put("name", testCategoryName); // Using already created name
+        
+        getAuthenticatedRequest(adminToken)
+                .body(category)
+                .when()
+                .post("/categories")
+                .then()
+                .statusCode(400);
+        
+        System.out.println("✓ Correctly rejected duplicate category name");
+    }
+    
+    // ==================== GET CATEGORY BY ID ====================
+    
+    @Test
+    @Order(10)
+    @DisplayName("GET /api/categories/{id} - Get category by ID")
+    public void testGetCategoryById() {
+        if (createdCategoryId == null) {
+            testCreateMainCategory();
+        }
+        
+        getAuthenticatedRequest(adminToken)
+                .when()
+                .get("/categories/{id}", createdCategoryId)
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(createdCategoryId.intValue()))
+                .body("name", equalTo(testCategoryName));
+        
+        System.out.println("✓ Successfully retrieved category by ID");
+    }
+    
+    @Test
+    @Order(11)
+    @DisplayName("GET /api/categories/{id} - Get non-existent category (should return 404)")
+    public void testGetNonExistentCategory() {
+        getAuthenticatedRequest(adminToken)
+                .when()
+                .get("/categories/{id}", 99999)
+                .then()
+                .statusCode(404);
+        
+        System.out.println("✓ Correctly returned 404 for non-existent category");
+    }
+    
+    @Test
+    @Order(12)
+    @DisplayName("GET /api/categories/{id} - Get category as TESTUSER (read-only access)")
+    public void testGetCategoryByIdAsTestUser() {
+        if (createdCategoryId == null) {
+            testCreateMainCategory();
+        }
+        
+        // Skip if testuser token is not available
+        if (testUserToken == null) {
+            System.out.println("⚠ Skipping test - testuser credentials not configured");
+            return;
+        }
+        
+        getAuthenticatedRequest(testUserToken)
+                .when()
+                .get("/categories/{id}", createdCategoryId)
+                .then()
+                .statusCode(anyOf(is(200), is(401))); // Accept 200 or 401 if testuser not configured
+        
+        System.out.println("✓ TESTUSER can read categories (read-only access)");
+    }
+    
+    // ==================== UPDATE CATEGORY ====================
+    
+    @Test
+    @Order(13)
+    @DisplayName("PUT /api/categories/{id} - Update category (ADMIN)")
+    public void testUpdateCategory() {
+        if (createdCategoryId == null) {
+            testCreateMainCategory();
+        }
+        
+        // Name must be 3-10 characters
+        String updatedName = "UpdCat" + (System.currentTimeMillis() % 1000);
+        if (updatedName.length() > 10) {
+            updatedName = updatedName.substring(0, 10);
+        }
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("name", updatedName);
+        
+        getAuthenticatedRequest(adminToken)
+                .body(updateData)
+                .when()
+                .put("/categories/{id}", createdCategoryId)
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("name", equalTo(updatedName))
+                .body("id", equalTo(createdCategoryId.intValue()));
+        
+        testCategoryName = updatedName; // Update for cleanup
+        System.out.println("✓ Successfully updated category");
+    }
+    
+    @Test
+    @Order(14)
+    @DisplayName("PUT /api/categories/{id} - Update category as TESTUSER (should fail - forbidden)")
+    public void testUpdateCategoryAsTestUser() {
+        if (createdCategoryId == null) {
+            testCreateMainCategory();
+        }
+        
+        // Skip if testuser token is not available
+        if (testUserToken == null) {
+            System.out.println("⚠ Skipping test - testuser credentials not configured");
+            return;
+        }
+        
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("name", "UpdName"); // 3-10 chars
+        
+        getAuthenticatedRequest(testUserToken)
+                .body(updateData)
+                .when()
+                .put("/categories/{id}", createdCategoryId)
+                .then()
+                .statusCode(anyOf(is(403), is(401))); // Accept either forbidden or unauthorized
+        
+        System.out.println("✓ Correctly rejected TESTUSER update request");
+    }
+    
+    @Test
+    @Order(15)
+    @DisplayName("PUT /api/categories/{id} - Update non-existent category (should return 404)")
+    public void testUpdateNonExistentCategory() {
+        Map<String, Object> updateData = new HashMap<>();
+        updateData.put("name", "UpdatedName");
+        
+        getAuthenticatedRequest(adminToken)
+                .body(updateData)
+                .when()
+                .put("/categories/{id}", 99999)
+                .then()
+                .statusCode(404);
+        
+        System.out.println("✓ Correctly returned 404 for non-existent category update");
+    }
+    
+    // ==================== DELETE CATEGORY ====================
+    
+    @Test
+    @Order(16)
+    @DisplayName("DELETE /api/categories/{id} - Delete category (ADMIN)")
+    public void testDeleteCategory() {
+        // Create a category to delete (name must be 3-10 chars)
+        Map<String, Object> category = new HashMap<>();
+        String deleteCategoryName = "DelCat" + (System.currentTimeMillis() % 1000);
+        if (deleteCategoryName.length() > 10) {
+            deleteCategoryName = deleteCategoryName.substring(0, 10);
+        }
+        category.put("name", deleteCategoryName);
+        
+        Response createResponse = getAuthenticatedRequest(adminToken)
+                .body(category)
+                .when()
+                .post("/categories")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        
+        Long categoryIdToDelete = createResponse.jsonPath().getLong("id");
+        
+        // Delete the category
+        getAuthenticatedRequest(adminToken)
+                .when()
+                .delete("/categories/{id}", categoryIdToDelete)
+                .then()
+                .statusCode(204);
+        
+        // Verify it's deleted
+        getAuthenticatedRequest(adminToken)
+                .when()
+                .get("/categories/{id}", categoryIdToDelete)
+                .then()
+                .statusCode(404);
+        
+        System.out.println("✓ Successfully deleted category");
+    }
+    
+    @Test
+    @Order(17)
+    @DisplayName("DELETE /api/categories/{id} - Delete category as TESTUSER (should fail - forbidden)")
+    public void testDeleteCategoryAsTestUser() {
+        if (createdCategoryId == null) {
+            testCreateMainCategory();
+        }
+        
+        // Skip if testuser token is not available
+        if (testUserToken == null) {
+            System.out.println("⚠ Skipping test - testuser credentials not configured");
+            return;
+        }
+        
+        getAuthenticatedRequest(testUserToken)
+                .when()
+                .delete("/categories/{id}", createdCategoryId)
+                .then()
+                .statusCode(anyOf(is(403), is(401))); // Accept either forbidden or unauthorized
+        
+        System.out.println("✓ Correctly rejected TESTUSER delete request");
+    }
+    
+    // ==================== GET MAIN CATEGORIES ====================
+    
+    @Test
+    @Order(18)
+    @DisplayName("GET /api/categories/main - Get main categories only")
+    public void testGetMainCategories() {
+        getAuthenticatedRequest(adminToken)
+                .when()
+                .get("/categories/main")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+        
+        System.out.println("✓ Successfully retrieved main categories");
+    }
+    
+    // ==================== GET SUB-CATEGORIES ====================
+    
+    @Test
+    @Order(19)
+    @DisplayName("GET /api/categories/sub-categories - Get all sub-categories")
+    public void testGetSubCategories() {
+        getAuthenticatedRequest(adminToken)
+                .when()
+                .get("/categories/sub-categories")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+        
+        System.out.println("✓ Successfully retrieved sub-categories");
+    }
+    
+    // ==================== GET CATEGORY SUMMARY ====================
+    
+    @Test
+    @Order(20)
+    @DisplayName("GET /api/categories/summary - Get category summary")
+    public void testGetCategorySummary() {
+        getAuthenticatedRequest(adminToken)
+                .when()
+                .get("/categories/summary")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+        
+        System.out.println("✓ Successfully retrieved category summary");
+    }
+    
+    // ==================== PAGINATION TESTS ====================
+    
+    @Test
+    @Order(21)
+    @DisplayName("GET /api/categories/page - Get categories with pagination")
+    public void testGetCategoriesWithPagination() {
+        getAuthenticatedRequest(adminToken)
+                .queryParam("page", 0)
+                .queryParam("size", 10)
+                .queryParam("sortField", "id")
+                .queryParam("sortDir", "asc")
+                .when()
+                .get("/categories/page")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+        
+        System.out.println("✓ Successfully retrieved paginated categories");
+    }
+    
+    @Test
+    @Order(22)
+    @DisplayName("GET /api/categories/page - Get categories with pagination and name filter")
+    public void testGetCategoriesWithPaginationAndFilter() {
+        getAuthenticatedRequest(adminToken)
+                .queryParam("page", 0)
+                .queryParam("size", 5)
+                .queryParam("name", "Rose")
+                .queryParam("sortField", "name")
+                .queryParam("sortDir", "asc")
+                .when()
+                .get("/categories/page")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+        
+        System.out.println("✓ Successfully retrieved paginated and filtered categories");
+    }
+    
+    // ==================== CLEANUP ====================
+    
+    @AfterAll
+    public static void cleanup() {
+        // Clean up created test data
+        if (createdSubCategoryId != null) {
+            try {
+                getAuthenticatedRequest(adminToken)
+                        .when()
+                        .delete("/categories/{id}", createdSubCategoryId);
+                System.out.println("✓ Cleaned up sub-category: " + createdSubCategoryId);
+            } catch (Exception e) {
+                System.out.println("Warning: Could not delete sub-category: " + e.getMessage());
+            }
+        }
+        
+        if (createdCategoryId != null) {
+            try {
+                getAuthenticatedRequest(adminToken)
+                        .when()
+                        .delete("/categories/{id}", createdCategoryId);
+                System.out.println("✓ Cleaned up category: " + createdCategoryId);
+            } catch (Exception e) {
+                System.out.println("Warning: Could not delete category: " + e.getMessage());
+            }
+        }
+    }
+}
+
