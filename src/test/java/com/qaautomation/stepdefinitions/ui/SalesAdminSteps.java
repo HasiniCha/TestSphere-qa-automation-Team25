@@ -1,5 +1,12 @@
 package com.qaautomation.stepdefinitions.ui;
 
+import java.time.Duration;
+
+import org.junit.Assert;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 import com.qaautomation.pages.DashboardPage;
 import com.qaautomation.pages.LoginPage;
 import com.qaautomation.pages.SidebarNavigation;
@@ -8,14 +15,11 @@ import com.qaautomation.pages.sales.SalesPage;
 import com.qaautomation.pages.sales.SellPlantPage;
 import com.qaautomation.utils.ConfigReader;
 import com.qaautomation.utils.DriverFactory;
-import io.cucumber.java.en.*;
-import java.time.Duration;
-import java.util.List;
-import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 public class SalesAdminSteps {
 
@@ -27,6 +31,8 @@ public class SalesAdminSteps {
   private PlantsPage plantsPage;
   private WebElement rowToDelete;
   private int rowCountBefore; 
+  private int initialStock;
+
 
   
   private LoginPage getLoginPage() {
@@ -126,11 +132,16 @@ public class SalesAdminSteps {
     Assert.assertEquals("Error message text mismatch", expected, actualMessage);
   }
 
-  // TC-002: validation error
   @When("Admin selects plant {string} from dropdown")
-  public void admin_selects_plant(String plant) {
-    getSellPlantPage().selectPlant(plant);
-  }
+public void admin_selects_plant(String dropdownText) {
+    
+    getSellPlantPage().selectPlant(dropdownText);
+    String plantNameOnly = dropdownText.split(" \\(Stock:")[0];
+    this.initialStock = getSellPlantPage().getPlantStockFromDropdown(dropdownText);
+    
+    System.out.println("Parsed Name: " + plantNameOnly);
+    System.out.println("Parsed Stock: " + initialStock);
+}
 
   @Then("Quantity validation message is displayed")
   public void quantity_validation_message_displayed() {
@@ -188,26 +199,22 @@ public class SalesAdminSteps {
     }
   }
 
-  @Then("Stock of plant {string} should be reduced to {string}")
-  public void stock_of_plant_should_be_reduced_to(
-    String plantName,
-    String expectedStock
-  ) {
-    Assert.assertTrue(
-      "Should be on Plants page",
-      getPlantsPage().isOnPlantsPage()
-    );
 
-    String actualStock = getPlantsPage().getPlantStock(plantName);
+ @Then("Stock of plant {string} should be reduced by {int}")
+  public void stock_of_plant_should_be_reduced_by(String plantName, int qtySold) {
+    int actualStock = getPlantsPage().getPlantStockAsInt(plantName);
+    int expectedStock = initialStock - qtySold;
 
-    String numericStock = actualStock.split(" ")[0].trim();
+    System.out.println("Expected stock after sale: " + expectedStock);
+    System.out.println("Actual stock after sale: " + actualStock);
 
     Assert.assertEquals(
-      "Stock for plant '" + plantName + "' should be reduced correctly",
+      "Stock for " + plantName + " did not reduce correctly!",
       expectedStock,
-      numericStock
+      actualStock
     );
   }
+  
 
   //delete
   @Given("at least one sales record exists")
