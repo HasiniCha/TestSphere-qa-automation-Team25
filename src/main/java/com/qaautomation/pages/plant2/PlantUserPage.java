@@ -4,6 +4,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
 import java.time.Duration;
 import java.util.List;
+import org.openqa.selenium.support.ui.Select;
 
 public class PlantUserPage {
 
@@ -135,4 +136,11 @@ public class PlantUserPage {
             return 0;
         }
     }
+
+    public void selectCategory(String categoryName) {
+    WebElement dropdownElement = driver.findElement(By.name("categoryId"));
+    Select categoryDropdown = new Select(dropdownElement);
+    categoryDropdown.selectByVisibleText(categoryName);
+}
+
 }

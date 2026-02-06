@@ -1,4 +1,4 @@
-@AdminUI
+@AdminUI 
 Feature: Admin Plant Management
   As an admin
   I want to manage plants in the system
@@ -52,9 +52,7 @@ Feature: Admin Plant Management
     And The plant is not saved
 
  @AdminUI @TC-UI-PLANT-ADMIN004 @positive @validation
-  Scenario: Verify Admin can update only the plant quantity(Valid) in Edit Mode
-    Given User is logged in as Admin
-    And Dashboard is displayed
+  Scenario: Verify Admin can update only the plant quantity(Valid) in Edit Mode    
     Given User is on the Plant List page    
     And User clicks the Edit button for the plant "Avacad0o03 Plant"
     When User enters "110" in the Quantity field

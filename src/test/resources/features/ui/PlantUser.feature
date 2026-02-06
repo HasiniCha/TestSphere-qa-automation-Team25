@@ -27,9 +27,10 @@ Feature: Plant Management - User Role
     When User attempts to navigate to "/plants/add" directly
     Then User is redirected to the Plant List or shows "Access Denied"
 
-  @TC-UI-PLANT-USER-004 @positive
-  Scenario: Filter by Name and Category    
-    When User enters "Apple5" in the search input field
+ @UserUI @TC-UI-PLANT-USER-004 @positive
+  Scenario: Filter by Name and Category     
+    When User enters "Apple5" in the search input field    
+    And User selects "mango-1" from the category filter dropdown
     And User clicks the Search button
     Then Only plants matching "Apple5" and "mango-1" are displayed
 

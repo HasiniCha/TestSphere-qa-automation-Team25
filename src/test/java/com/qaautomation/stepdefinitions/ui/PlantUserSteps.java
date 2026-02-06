@@ -8,10 +8,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import com.qaautomation.utils.DriverFactory;
 
 public class PlantUserSteps {
 
-    private WebDriver driver = Hooks.driver;
+    private WebDriver driver = DriverFactory.getDriver();
     private PlantUserPage userPage = new PlantUserPage(driver);
     private LoginPage loginPage = new LoginPage(driver);
     private String baseUrl = "http://localhost:8080/ui";
@@ -130,5 +131,11 @@ public class PlantUserSteps {
     public void only_plants_matching_and_are_displayed(String name, String category) {
         Assert.assertTrue("Filter validation failed", 
             userPage.verifyFilteredResults(name, category));
+    }   
+
+    @When("User selects {string} from the category filter dropdown")
+    public void user_selects_from_the_category_filter_dropdown(String categoryName) {
+    userPage.selectCategory(categoryName);
     }
+    
 }

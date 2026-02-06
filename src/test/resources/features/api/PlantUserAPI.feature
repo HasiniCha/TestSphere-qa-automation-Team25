@@ -1,4 +1,4 @@
-@api @user
+@API @user
 Feature: Plant Retrieval API (User)
   As a User
   I want to browse plants
@@ -30,8 +30,7 @@ Feature: Plant Retrieval API (User)
 
   @TC-API-PLANT-USER-004 @positive
   Scenario: Get Paged Plants - Plant Name Filter
-    When User sends a GET request to search "/api/plants/paged" for name "Anthurium"
-    # CHANGE THIS LINE:
+    When User sends a GET request to search "/api/plants/paged" for name "Anthurium"    
     Then The User receives status code 200
     And The response body should contain "content"
 

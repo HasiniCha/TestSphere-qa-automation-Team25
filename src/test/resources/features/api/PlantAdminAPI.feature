@@ -1,4 +1,4 @@
-@api @Admin
+@API @Admin
 Feature: Plant Management API
   As an Admin
   I want to manage plants via API
@@ -11,12 +11,12 @@ Feature: Plant Management API
   Scenario: Create Plant - Valid Data
     Given A valid sub-category exists with ID 2
     When I send a POST request to "/api/plants/category/2" with the following data:
-      | name     | se1eniers|
+      | name     | flower|
       | price    | 150       |
       | quantity | 25        |
     Then The API response status code should be 200 or 201
     And The response body should contain a generated "id"
-    And The response body should contain "name" with value "se1eniers"
+    And The response body should contain "name" with value "flower"
 
     @TC-API-PLANT-ADMIN002 @positive
   Scenario: Update Plant - Valid Data    

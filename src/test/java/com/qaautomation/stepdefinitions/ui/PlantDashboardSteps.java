@@ -5,10 +5,11 @@ import com.qaautomation.pages.plant2.PlantUserPage;
 import io.cucumber.java.en.*;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
+import com.qaautomation.utils.DriverFactory;
 
 public class PlantDashboardSteps {
 
-    private WebDriver driver = Hooks.driver;
+    private WebDriver driver = DriverFactory.getDriver();
     private PlantDashboardPage plantDashboardPage = new PlantDashboardPage(driver);
     private PlantUserPage plantPage = new PlantUserPage(driver);
     private int listCount = 0;
