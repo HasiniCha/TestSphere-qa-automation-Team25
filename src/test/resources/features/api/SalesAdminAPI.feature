@@ -32,8 +32,8 @@ Feature: Sales API Functionality
  @TC-API-SALES-ADMIN-004 @Delete
  Scenario: Delete sale by ID
   Given Admin is authenticated for API
-  And a sale with ID 22 exists in the system
-  When Admin sends a DELETE request to "/sales/{id}" for sale ID 22
+  And a sale with ID 52 exists in the system
+  When Admin sends a DELETE request to "/sales/{id}" for sale ID 52
   Then the API returns 204 status code
 
   @TC-API-SALES-ADMIN-005 @Negative @Delete

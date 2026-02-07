@@ -143,10 +143,11 @@ public class SalesApiSteps {
 
   // --- GET ACTIONS ---
 
-  @When("User sends a GET request for sales to {string}")
-  public void user_sends_get_request_sales(String endpoint) {
+  @When(" Sales User sends a GET request to {string}")
+  public void sales_user_sends_get_request(String endpoint) {
     response = request.get(endpoint);
   }
+
 
   @When("User sends a GET request to {string} for sale ID {int}")
   public void user_get_sale_by_id(String endpoint, int saleId) {

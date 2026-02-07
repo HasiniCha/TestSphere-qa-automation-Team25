@@ -11,12 +11,12 @@ Feature: Plant Management API
   Scenario: Create Plant - Valid Data
     Given A valid sub-category exists with ID 16
     When I send a POST request to "/api/plants/category/16" with the following data:
-      | name     | flower11|
+      | name     | flower1111|
       | price    | 150       |
       | quantity | 25        |
     Then The API response status code should be 200 or 201
     And The response body should contain a generated "id"
-    And The response body should contain "name" with value "flower11"
+    And The response body should contain "name" with value "flower1111"
 
     @TC-API-PLANT-ADMIN002 @positive
   Scenario: Update Plant - Valid Data    

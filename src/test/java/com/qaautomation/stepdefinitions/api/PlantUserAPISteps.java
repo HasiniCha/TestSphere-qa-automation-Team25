@@ -1,5 +1,6 @@
 package com.qaautomation.stepdefinitions.api;
 
+import io.cucumber.java.Before;  
 import static io.restassured.RestAssured.given;
 import io.cucumber.java.en.*;
 import io.restassured.RestAssured;
@@ -18,6 +19,14 @@ public class PlantUserAPISteps {
     private RequestSpecification request;
 
     // --- DYNAMIC AUTHENTICATION LOGIC ---
+
+    @Before("@API")
+public void setup() {
+    request = RestAssured
+        .given()
+        .baseUri("http://localhost:8080")
+        .contentType(ContentType.JSON);
+}
     
     private String loginAndGetToken(String role) {
         RestAssured.baseURI = ConfigReader.get("api.base.url");
